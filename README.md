@@ -23,7 +23,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] A concise and compelling elevator pitch
 - [x] Description of key features
 - [x] Description of how you will use each technology
-- [ ] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
+- [x] One or more rough sketches of your application. Images must be embedded in this file using Markdown image references.
 
 ### Elevator pitch
 Winter sports have a high paywall that may intimidate some people from entering the sport. While there are lots of broad resell markets like facebook marketplace which lets people buy items second-hand at a discount of retail price, it is hard for first timers to research about the items and come to a good conclusion. My website will be a secondhand marketplace designed specifically for winter sport equipment. It will let users buy items at a discount while letting sellers get rid of their old unwanted items. There will also be a link using google image searching to give the buyer a link to a website that has reviews/specs for the product they are interested in to give them what they want.
