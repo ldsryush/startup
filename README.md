@@ -52,12 +52,12 @@ sequenceDiagram
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Description here
-- **CSS** - Description here
-- **React** - Description here
-- **Service** - Description here
-- **DB/Login** - Description here
-- **WebSocket** - Description here
+- **HTML** - Use the correct HTML structure for the application.Two HTML pages. One for login and one for creating links to the websites with reviews/specs for the product.
+- **CSS** - Application styling to make it look good on varying screen size, good whitespace, color choice, contrast, layout, positioning, and fonts.
+- **React** - Login form, navigation bar, home page, contact page. 
+- **Service** - translation service, authenticating the user.
+- **DB/Login** - Store users and searches in database. Register and login users. Credentials are stored in database. Can't message unless authenticated.
+- **WebSocket** - chat application between users.
 
 ## 🚀 AWS deliverable
 
