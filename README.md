@@ -43,7 +43,9 @@ sequenceDiagram
 ```
 
 ### Key features
-
+- Lets users message each other about the item
+- Direct link to research about their item 
+- Let's people get over the high paywall most winter sports have
  
 
 ### Technologies
