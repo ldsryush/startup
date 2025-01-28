@@ -6,6 +6,8 @@
 *learned how to pull and push from vs code
 *Read about the basics of commits
 *Learned about html
+*Learned how to link my domain name with my ip address
+*Learned how to make a permanent ip address for my website.
 
 
 > [!NOTE]
