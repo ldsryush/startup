@@ -8,6 +8,7 @@
 *Learned about html
 *Learned how to link my domain name with my ip address
 *Learned how to make a permanent ip address for my website.
+*Solved my commit issue
 
 
 > [!NOTE]
