@@ -9,7 +9,9 @@
 *Learned how to link my domain name with my ip address
 *Learned how to make a permanent ip address for my website.
 *Solved my commit issue
-
+* Created input, index, media html. That has the structures of my website.
+*messed around with html settings and how do create links to 3rd party websites
+*Learned how to put in images, videos, and change colors.
 
 > [!NOTE]
 >  This is a template for your startup application. You must modify this `README.md` file for each phase of your development. You only need to fill in the section for each deliverable when that deliverable is submitted in Canvas. Without completing the section for a deliverable, the TA will not know what to look for when grading your submission. Feel free to add additional information to each deliverable description, but make sure you at least have the list of rubric items and a description of what you did for each item.
@@ -66,15 +68,15 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **HTML pages** - I did not complete this part of the deliverable.
-- [ ] **Proper HTML element usage** - I did not complete this part of the deliverable.
-- [ ] **Links** - I did not complete this part of the deliverable.
-- [ ] **Text** - I did not complete this part of the deliverable.
-- [ ] **3rd party API placeholder** - I did not complete this part of the deliverable.
-- [ ] **Images** - I did not complete this part of the deliverable.
-- [ ] **Login placeholder** - I did not complete this part of the deliverable.
-- [ ] **DB data placeholder** - I did not complete this part of the deliverable.
-- [ ] **WebSocket placeholder** - I did not complete this part of the deliverable.
+- [x] **HTML pages** - I did complete this part of the deliverable.
+- [x] **Proper HTML element usage** - I did complete this part of the deliverable.
+- [x] **Links** - I did complete this part of the deliverable.
+- [x] **Text** - I did complete this part of the deliverable.
+- [x] **3rd party API placeholder** - I did complete this part of the deliverable.
+- [x] **Images** - I did complete this part of the deliverable.
+- [x] **Login placeholder** - I did complete this part of the deliverable.
+- [x] **DB data placeholder** - I did complete this part of the deliverable.
+- [x] **WebSocket placeholder** - I did complete this part of the deliverable.
 
 ## 🚀 CSS deliverable
 
