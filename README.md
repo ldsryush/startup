@@ -1,5 +1,5 @@
 # Your startup name here
-
+test
 [My Notes](notes.md)
 *learned about the basics of github
 *created a ssh key
@@ -12,6 +12,13 @@
 * Created input, index, media html. That has the structures of my website.
 *messed around with html settings and how do create links to 3rd party websites
 *Learned how to put in images, videos, and change colors.
+*Learned about CSS
+*Learned how to change colors for screen, font, background etc.
+*Editing CSS is pretty straight forward
+*Font-style, font-size, text-align and put the desired change afterwards
+header - flex: 0 80px - Zero means it will not grow and 80px means it has a starting basis height of 80 pixels. This creates a fixed size box.
+footer - flex: 0 30px - Like the header it will not grow and has a height of 30 pixels.
+main - flex: 1 - One means it will get one fractional unit of growth, and since it is the only child with a non-zero growth value, it will get all the remaining space. Main also gets some additional properties because we want it to also be a flexbox container for the controls and content area. So we set its display to be flex and specify the flex-direction to be row so that the children are oriented side by side.
 
 > [!NOTE]
 >  This is a template for your startup application. You must modify this `README.md` file for each phase of your development. You only need to fill in the section for each deliverable when that deliverable is submitted in Canvas. Without completing the section for a deliverable, the TA will not know what to look for when grading your submission. Feel free to add additional information to each deliverable description, but make sure you at least have the list of rubric items and a description of what you did for each item.
