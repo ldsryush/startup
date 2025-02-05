@@ -14,6 +14,15 @@
     color: blue;
 }
 
+/* Ensure links within font1 and font2 inherit their styles */
+.font1 a, .font2 a {
+    color: inherit; /* Ensures links inherit the color from the parent element */
+    text-decoration: none; /* Removes underline from links */
+}
+
+.font1 a:hover, .font2 a:hover {
+    text-decoration: underline; /* Adds underline on hover for better UX */
+}
 .font3 {
     font-family: 'Pacifico', cursive;
     font-size: 50px;
