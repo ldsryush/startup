@@ -1,25 +1,51 @@
-/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap'); /* Import Font 1 */
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap'); /* Import Font 2 */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap'); /* Import Font 3 */
+
+.font1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    color: orange;
+}
+
+.font2 {
+    font-family: 'Lobster', cursive;
+    font-size: 20px;
+    color: blue;
+}
+
+.font3 {
+    font-family: 'Pacifico', cursive;
+    font-size: 50px;
+    color: white;
+}
+.font4 {
+    font-family: 'Pacifico', cursive;
+    font-size: 25px;
+    color: white;
+}
+
 body {
     background-color: lightblue;
     font-family: Arial, sans-serif;
-    text-align: center; 
-    margin: 0; 
-    height: 100vh; 
+    text-align: center; /* Center all text by default */
+    margin: 0; /* Remove default margin */
+    height: 100vh; /* Full height of the viewport */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .left-align {
-    text-align: left; 
-    width: 100%; 
-    margin: 0; 
+    text-align: left; /* Align selected text to the left */
+    width: 100%; /* Ensure it takes full width */
+    margin: 0; /* Reset margin */
 }
 
 .right-align {
-    text-align: right; 
-    width: 100%;
-    margin: 0;
+    text-align: right; /* Align selected text to the right */
+    width: 100%; /* Ensure it takes full width */
+    margin: 0; /* Reset margin */
 }
 
 header, footer, main {
@@ -40,8 +66,38 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
-
+.orange-text {
+    color: orange;
+}
+.white-text {
+    color: white;
+}
 aside img {
     display: block;
     margin: auto;
+}
+.search-form {
+    display: flex;
+}
+
+.search-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.search-button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+.search-button:hover {
+    background-color: #45a049
 }
