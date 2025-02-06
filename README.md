@@ -74,15 +74,15 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [x] **HTML pages** - I did complete this part of the deliverable.
-- [x] **Proper HTML element usage** - I did complete this part of the deliverable.
-- [x] **Links** - I did complete this part of the deliverable.
-- [x] **Text** - I did complete this part of the deliverable.
-- [x] **3rd party API placeholder** - I did complete this part of the deliverable.
-- [x] **Images** - I did complete this part of the deliverable.
-- [x] **Login placeholder** - I did complete this part of the deliverable.
-- [x] **DB data placeholder** - I did complete this part of the deliverable.
-- [x] **WebSocket placeholder** - I did complete this part of the deliverable.
+- [x] **HTML pages** - I added an index.html, input.html, and media.html pages to my website.
+- [x] **Proper HTML element usage** - I researched and applied proper html element usage to my .html pages.
+- [x] **Links** - I added links to my github, my startup repoisitory, and a link to a video about snowboarding.
+- [x] **Text** - I added the name of my website, information about what you can look at.
+- [x] **3rd party API placeholder** - I added a API placeholder in my index.html.
+- [x] **Images** - I added a basic image that related to the purpose of my website at index.html
+- [x] **Login placeholder** - I added a login place holder in index.html .
+- [x] **DB data placeholder** - I added a placeholder that I can later integrate to use actual data.
+- [x] **WebSocket placeholder** - I added a placeholder that I can later go in and use actual data for.
 
 ## 🚀 CSS deliverable
 
