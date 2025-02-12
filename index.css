@@ -135,6 +135,7 @@ h2 {
 .form-group label {
     display: block;
     margin-bottom: 5px;
+    color: black; /* Ensure the label text is visible */
 }
 
 .form-group input,
@@ -156,25 +157,4 @@ h2 {
 
 .form-group button:hover {
     background-color: #45a049;
-}
-
-.apparel-item {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.apparel-item img {
-    margin-bottom: 10px;
-}
-
-.apparel-item button {
-    background-color: #008CBA;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-}
-
-.apparel-item button:hover {
-    background-color: #007bb5;
 }
