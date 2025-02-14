@@ -24,6 +24,8 @@ The use of absolute positioning relative to the parent element for the game cont
 The selection based on class attributes to style elements.
 The override of Bootstrap in order to keep the menu from changing the flex direction to column on small screens.
 The use of @media selectors to hide content when the screen is too small.
+Learned about react and bootstrap.
+How to deploy react and how it works with js. 
 
 ## 🚀 Specification Deliverable
 
