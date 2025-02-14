@@ -1,0 +1,12 @@
+{
+  "name": "startup",
+  "version": "1.0.0",
+  "description": "test [My Notes](notes.md) *learned about the basics of github *created a ssh key *learned how to pull and push from vs code *Read about the basics of commits *Learned about html *Learned how to link my domain name with my ip address *Learned how to make a permanent ip address for my website. *Solved my commit issue * Created input, index, media html. That has the structures of my website. *messed around with html settings and how do create links to 3rd party websites *Learned how to put in images, videos, and change colors. *Learned about CSS *Learned how to change colors for screen, font, background etc. *Editing CSS is pretty straight forward *Font-style, font-size, text-align and put the desired change afterwards header - flex: 0 80px - Zero means it will not grow and 80px means it has a starting basis height of 80 pixels. This creates a fixed size box. footer - flex: 0 30px - Like the header it will not grow and has a height of 30 pixels. main - flex: 1 - One means it will get one fractional unit of growth, and since it is the only child with a non-zero growth value, it will get all the remaining space. Main also gets some additional properties because we want it to also be a flexbox container for the controls and content area. So we set its display to be flex and specify the flex-direction to be row so that the children are oriented side by side. Flex is used to delimit the header, main, and footer elements. This makes them responsive to different screen sizes. The use of absolute positioning relative to the parent element for the game controls. The selection based on class attributes to style elements. The override of Bootstrap in order to keep the menu from changing the flex direction to column on small screens. The use of @media selectors to hide content when the screen is too small.",
+  "main": "demo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
