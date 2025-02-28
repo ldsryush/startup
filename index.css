@@ -1,160 +1,77 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-
-.font1 {
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    color: orange;
-}
-
-.font2 {
-    font-family: 'Lobster', cursive;
-    font-size: 20px;
-    color: blue;
-}
-
-.font1 a, .font2 a {
-    color: inherit;
-    text-decoration: none;
-}
-
-.font1 a:hover, .font2 a:hover {
-    text-decoration: underline;
-}
-
-.font3 {
-    font-family: 'Pacifico', cursive;
-    font-size: 50px;
-    color: white;
-}
-
-.font4 {
-    font-family: 'Pacifico', cursive;
-    font-size: 25px;
-    color: white;
-}
-
 body {
-    background-color: lightblue;
     font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.left-align {
-    text-align: left;
-    width: 100%;
-    margin: 0;
-}
-
-.right-align {
-    text-align: right;
-    width: 100%;
-    margin: 0;
-}
-
-header, footer, main {
-    width: 100%;
-}
-
-table {
-    width: auto;
+  }
+  
+  .container {
+    max-width: 800px;
     margin: auto;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-.orange-text {
-    color: orange;
-}
-
-.white-text {
-    color: white;
-}
-
-aside img {
-    display: block;
-    margin: auto;
-}
-
-.search-form {
-    display: flex;
-}
-
-.search-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
-    outline: none;
-}
-
-.search-button {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-left: none;
-    border-radius: 0 4px 4px 0;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    outline: none;
-}
-
-.search-button:hover {
-    background-color: #45a049;
-}
-
-.container {
-    max-width: 600px;
-    margin: 20px auto;
-    background-color: #fff;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
+  }
+  
+  h1.font3 {
+    font-size: 36px;
     text-align: center;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: black; /* Ensure the label text is visible */
-}
-
-.form-group input,
-.form-group textarea {
-    width: 100%;
+  }
+  
+  h1.font4 {
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  .search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
     padding: 10px;
-    box-sizing: border-box;
-}
-
-.form-group button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
+    font-size: 16px;
+    margin-right: 10px;
+    width: 200px;
+  }
+  
+  .search-button {
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
-}
-
-.form-group button:hover {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+  }
+  
+  .search-button:hover {
     background-color: #45a049;
-}
+  }
+  
+  .right-align {
+    text-align: right;
+  }
+  
+  .font2 {
+    font-size: 20px;
+  }
+  
+  .font1 {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  #websocket-data, #database-content, #service-result {
+    margin: 20px 0;
+  }
+  
+  footer {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  footer a {
+    color: blue;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
