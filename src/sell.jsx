@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import './sell.css';
 
 function SellForm() {
   const [itemName, setItemName] = useState('');
@@ -70,9 +69,4 @@ function SellForm() {
   );
 }
 
-function App() {
-  return <SellForm />;
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+export default SellForm;

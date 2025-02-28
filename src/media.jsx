@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import './media.css';
 
 function MediaContent() {
   useEffect(() => {
@@ -38,9 +37,4 @@ function MediaContent() {
   );
 }
 
-function App() {
-  return <MediaContent />;
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+export default MediaContent;

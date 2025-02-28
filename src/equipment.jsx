@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import './equipment.css';
 
 function EquipmentItem({ image, title, description, price }) {
   function messageSeller() {
@@ -8,7 +7,7 @@ function EquipmentItem({ image, title, description, price }) {
   }
 
   return (
-    <div className="apparel-item">
+    <div className="equipment-item">
       <img src={image} width="300" height="250" alt={title} />
       <h3 className="font1">{title}</h3>
       <p className="font1">{description}</p>
@@ -50,11 +49,4 @@ function EquipmentMarketplace() {
   );
 }
 
-function App() {
-  return (
-    <EquipmentMarketplace />
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+export default EquipmentMarketplace;

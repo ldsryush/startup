@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import './input.css';
 
 function InputForm() {
   const [rangeValue, setRangeValue] = useState(0);
@@ -148,9 +147,4 @@ function InputForm() {
   );
 }
 
-function App() {
-  return <InputForm />;
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+export default InputForm;

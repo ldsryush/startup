@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import React from 'react';
+import './apparel.css';
 
 function ApparelItem({ image, title, description, price }) {
   function messageSeller() {
-    // This function can be replaced with a future implementation
     alert(`Messaging seller about: ${title}`);
   }
 
@@ -51,11 +49,4 @@ function ApparelMarketplace() {
   );
 }
 
-function App() {
-  return (
-    <ApparelMarketplace />
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+export default ApparelMarketplace;
