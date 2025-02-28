@@ -1,49 +1,77 @@
 body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #007bff; /* Blue background */
     font-family: Arial, sans-serif;
-    color: white;
   }
   
-  .app {
+  .container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  h1.font3 {
+    font-size: 36px;
     text-align: center;
   }
   
-  .page {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    color: black;
+  h1.font4 {
+    font-size: 24px;
+    text-align: center;
   }
   
-  button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
+  .search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-input {
+    padding: 10px;
+    font-size: 16px;
+    margin-right: 10px;
+    width: 200px;
+  }
+  
+  .search-button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
   }
   
-  button:hover {
+  .search-button:hover {
     background-color: #45a049;
   }
   
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
+  .right-align {
+    text-align: right;
+  }
+  
+  .font2 {
     font-size: 20px;
   }
   
-  nav a:hover {
+  .font1 {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+  
+  #websocket-data, #database-content, #service-result {
+    margin: 20px 0;
+  }
+  
+  footer {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  footer a {
+    color: blue;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
     text-decoration: underline;
   }
   
