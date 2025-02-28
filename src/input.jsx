@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import './input.css';
+import React from 'react';
 
-function InputForm() {
-  const [rangeValue, setRangeValue] = useState(0);
+export function Input(props) {
+  const [rangeValue, setRangeValue] = React.useState(0);
 
   function handleRangeChange(event) {
     setRangeValue(event.target.value);
@@ -146,5 +145,3 @@ function InputForm() {
     </div>
   );
 }
-
-export default InputForm;

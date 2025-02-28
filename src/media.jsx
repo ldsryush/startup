@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import './media.css';
+import React from 'react';
 
-function MediaContent() {
-  useEffect(() => {
+export function Media(props) {
+  React.useEffect(() => {
     const ctx = document.getElementById('canvasDemo').getContext('2d');
     ctx.beginPath();
     ctx.arc(150, 100, 50, 0, 2 * Math.PI);
@@ -36,5 +35,3 @@ function MediaContent() {
     </div>
   );
 }
-
-export default MediaContent;

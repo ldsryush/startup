@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import './sell.css';
+import React from 'react';
 
-function SellForm() {
-  const [itemName, setItemName] = useState('');
-  const [itemDescription, setItemDescription] = useState('');
-  const [itemPrice, setItemPrice] = useState('');
-  const [itemImage, setItemImage] = useState(null);
+export function Sell(props) {
+  const [itemName, setItemName] = React.useState('');
+  const [itemDescription, setItemDescription] = React.useState('');
+  const [itemPrice, setItemPrice] = React.useState('');
+  const [itemImage, setItemImage] = React.useState(null);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -68,5 +67,3 @@ function SellForm() {
     </div>
   );
 }
-
-export default SellForm;

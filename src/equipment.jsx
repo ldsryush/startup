@@ -1,23 +1,6 @@
 import React from 'react';
-import './equipment.css';
 
-function EquipmentItem({ image, title, description, price }) {
-  function messageSeller() {
-    alert(`Messaging seller about: ${title}`);
-  }
-
-  return (
-    <div className="equipment-item">
-      <img src={image} width="300" height="250" alt={title} />
-      <h3 className="font1">{title}</h3>
-      <p className="font1">{description}</p>
-      <p className="font1 orange-text">Price: ${price}</p>
-      <button className="font1" onClick={messageSeller}>Message Seller</button>
-    </div>
-  );
-}
-
-function EquipmentMarketplace() {
+export function Equipment(props) {
   const items = [
     {
       image: 'https://www.tactics.com/a/ejjk/2/burton-family-tree-power-wagon-snowboard-1.webp',
@@ -39,6 +22,22 @@ function EquipmentMarketplace() {
     },
   ];
 
+  function EquipmentItem({ image, title, description, price }) {
+    function messageSeller() {
+      alert(`Messaging seller about: ${title}`);
+    }
+
+    return (
+      <div className="apparel-item">
+        <img src={image} width="300" height="250" alt={title} />
+        <h3 className="font1">{title}</h3>
+        <p className="font1">{description}</p>
+        <p className="font1 orange-text">Price: ${price}</p>
+        <button className="font1" onClick={messageSeller}>Message Seller</button>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <h2 className="font3">Equipments</h2>
@@ -48,5 +47,3 @@ function EquipmentMarketplace() {
     </div>
   );
 }
-
-export default EquipmentMarketplace;

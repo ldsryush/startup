@@ -1,23 +1,6 @@
 import React from 'react';
-import './apparel.css';
 
-function ApparelItem({ image, title, description, price }) {
-  function messageSeller() {
-    alert(`Messaging seller about: ${title}`);
-  }
-
-  return (
-    <div className="apparel-item">
-      <img src={image} width="200" height="150" alt={title} />
-      <h3 className="font1">{title}</h3>
-      <p className="font1">{description}</p>
-      <p className="font1 orange-text">Price: ${price}</p>
-      <button className="font1" onClick={messageSeller}>Message Seller</button>
-    </div>
-  );
-}
-
-function ApparelMarketplace() {
+export function Apparel(props) {
   const items = [
     {
       image: 'https://www.bluezonesports.com/prodimages/9912-TRUEBLACK-l.jpg',
@@ -39,6 +22,22 @@ function ApparelMarketplace() {
     },
   ];
 
+  function ApparelItem({ image, title, description, price }) {
+    function messageSeller() {
+      alert(`Messaging seller about: ${title}`);
+    }
+
+    return (
+      <div className="apparel-item">
+        <img src={image} width="200" height="150" alt={title} />
+        <h3 className="font1">{title}</h3>
+        <p className="font1">{description}</p>
+        <p className="font1 orange-text">Price: ${price}</p>
+        <button className="font1" onClick={messageSeller}>Message Seller</button>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <h2 className="font3">Apparel Category</h2>
@@ -48,5 +47,3 @@ function ApparelMarketplace() {
     </div>
   );
 }
-
-export default ApparelMarketplace;

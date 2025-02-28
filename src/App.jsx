@@ -1,12 +1,15 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import Apparel from './apparel';
-import Equipment from './equipment';
-import Input from './input';
-import Media from './media';
-import Sell from './sell';
+import React, { useState } from 'react';
+import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Apparel } from './apparel';
+import { Equipment } from './equipment';
+import { Input } from './input';
+import { Media } from './media';
+import { Sell } from './sell';
 import './index.css';
+
+
+
 
 function App() {
   return (
@@ -33,4 +36,4 @@ function App() {
   );
 }
 
-export default App;
+
