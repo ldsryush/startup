@@ -26,6 +26,33 @@ The override of Bootstrap in order to keep the menu from changing the flex direc
 The use of @media selectors to hide content when the screen is too small.
 Learned about react and bootstrap.
 How to deploy react and how it works with js. 
+Component-Based Architecture:
+
+React applications are built using components, which are self-contained modules that define the UI and behavior for a small part of your application. Components can be composed together to create complex UIs.
+
+Virtual DOM:
+
+React uses a virtual DOM to improve performance. Instead of directly manipulating the browser's DOM, React creates a virtual representation of it. When the state of an object changes, React updates the virtual DOM first, then efficiently updates the actual DOM to match.
+
+JSX (JavaScript XML):
+
+JSX is a syntax extension for JavaScript that looks similar to XML or HTML. It allows you to write HTML structures within JavaScript code, making it easier to create and understand the UI components.
+
+Unidirectional Data Flow:
+
+React follows a unidirectional data flow, meaning that data flows in one direction, from parent to child components. This makes it easier to understand and debug your applications.
+
+State and Props:
+
+State is an object that holds data that may change over the lifetime of the component. Props (short for properties) are read-only attributes used to pass data from parent to child components.
+
+Lifecycle Methods:
+
+React components go through a lifecycle of events, such as mounting, updating, and unmounting. Lifecycle methods allow you to run code at specific points during a component's lifecycle.
+
+Hooks:
+
+React Hooks are functions that let you use state and other React features in functional components. Some commonly used hooks are useState, useEffect, and useContext.
 
 ## 🚀 Specification Deliverable
 
@@ -109,8 +136,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **All functionality implemented or mocked out** - I did not complete this part of the deliverable.
-- [ ] **Hooks** - I did not complete this part of the deliverable.
+- [x] **All functionality implemented or mocked out** - I converted various HTML files into React components, utilizing useState for state management and useEffect for lifecycle events. The app includes components for login, play, marketplaces, input forms, media content, and selling items. I also integrated WebSocket and mock API calls for database and third-party services. Consistent CSS styling ensures a responsive design, transforming static HTML into a dynamic, interactive React application.
+- [x] **Hooks** - I implemented various React hooks to manage the state and lifecycle events of the components. For state management, I used useState to handle user inputs, item details, and other dynamic values. To handle lifecycle events and perform side effects, I utilized useEffect for tasks such as setting up WebSocket connections, fetching data from APIs, and updating the DOM for canvas drawings. 
 
 ## 🚀 Service deliverable
 
