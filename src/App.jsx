@@ -8,7 +8,8 @@ import { Sell } from "./sell/sell";
 import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
-import Products from "./products/products"; 
+import Products from "./products/products";
+import PasswordReset from "./auth/password-reset"; // Import PasswordReset component
 import "./index/index.css";
 
 function App() {
@@ -17,12 +18,12 @@ function App() {
     { id: 2, username: "user2", password: "securePass456" },
   ];
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false); 
-  const [currentUser, setCurrentUser] = useState(null); 
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Login state tracking
+  const [currentUser, setCurrentUser] = useState(null); // Current logged-in user
 
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
-    setCurrentUser(user); 
+    setCurrentUser(user);
   };
 
   const handleLogout = () => {
@@ -40,7 +41,7 @@ function App() {
         <NavLink to="/input">Input</NavLink>
         <NavLink to="/media">Media</NavLink>
         <NavLink to="/sell">Sell</NavLink>
-        <NavLink to="/products">Products</NavLink> {/* New link to Products */}
+        <NavLink to="/products">Products</NavLink> {/* Products Link */}
 
         {!isAuthenticated && (
           <>
@@ -78,9 +79,10 @@ function App() {
           <Route path="/input" element={<Input />} />
           <Route path="/media" element={<Media />} />
           <Route path="/sell" element={<Sell />} />
-          <Route path="/products" element={<Products />} /> {/* New Route for Products */}
+          <Route path="/products" element={<Products />} /> {/* Route for Products */}
           <Route path="/chat/:sellerId/:itemTitle" element={<Chatbox />} />
           <Route path="/signup" element={<Signup mockDatabase={mockDatabase} />} />
+          <Route path="/reset-password" element={<PasswordReset />} /> {/* Route for PasswordReset */}
           <Route path="/login" element={<Login mockDatabase={mockDatabase} onLoginSuccess={handleLoginSuccess} />} />
         </Routes>
       </main>

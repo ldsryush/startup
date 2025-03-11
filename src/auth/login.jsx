@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./auth.css"; // Updated from login.css to auth.css
+import { useNavigate, NavLink } from "react-router-dom"; 
+import "./auth.css"; 
 
 const Login = ({ mockDatabase, onLoginSuccess }) => {
   const [username, setUsername] = useState("");
@@ -42,6 +42,10 @@ const Login = ({ mockDatabase, onLoginSuccess }) => {
       />
       <button type="submit">Login</button>
       {error && <p className="error-message">{error}</p>}
+
+      <p>
+        Forgot your password? <NavLink to="/reset-password">Reset it here</NavLink>.
+      </p>
     </form>
   );
 };

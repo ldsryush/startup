@@ -1,0 +1,7 @@
+{
+    "users": [
+      { "id": 1, "email": "ldsryush@gmail.com", "resetCode": "ABC123" },
+      { "id": 2, "email": "user2@example.com", "resetCode": "XYZ789" }
+    ]
+  }
+  
