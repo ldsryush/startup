@@ -6,6 +6,7 @@ import { Equipment } from './equipment/equipment';
 import { Input } from './input/input';
 import { Media } from './media/media';
 import { Sell } from './sell/sell';
+
 import './index/index.css';
 
 function App() {

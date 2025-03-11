@@ -1,32 +1,37 @@
-import React from 'react';
-import './equipment.css';
+import React from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import "./equipment.css";
 
-
-export function Equipment(props) {
+export function Equipment() {
   const items = [
     {
-      image: 'https://www.tactics.com/a/ejjk/2/burton-family-tree-power-wagon-snowboard-1.webp',
-      title: 'Burton Snowboard',
-      description: 'Size 154cm',
-      price: '190',
+      sellerId: "seller001",
+      image: "https://www.tactics.com/a/ejjk/2/burton-family-tree-power-wagon-snowboard-1.webp",
+      title: "Burton Snowboard",
+      description: "Size 154cm",
+      price: "190",
     },
     {
-      image: 'https://cdn.skatepro.com/product/520/k2-disruption-mti-skis-xcell-12-tcx-bindings-i2.webp',
-      title: 'K2 Skis',
-      description: 'Size 160cm.',
-      price: '289.99',
+      sellerId: "seller002",
+      image: "https://cdn.skatepro.com/product/520/k2-disruption-mti-skis-xcell-12-tcx-bindings-i2.webp",
+      title: "K2 Skis",
+      description: "Size 160cm.",
+      price: "289.99",
     },
     {
-      image: 'https://cdn.skatepro.com/product/520/black-crows-duos-freebird-adjustable-ski-poles-v1.webp',
-      title: 'Ski poles',
-      description: 'Like new.',
-      price: '59.99',
+      sellerId: "seller003",
+      image: "https://cdn.skatepro.com/product/520/black-crows-duos-freebird-adjustable-ski-poles-v1.webp",
+      title: "Ski poles",
+      description: "Like new.",
+      price: "59.99",
     },
   ];
 
-  function EquipmentItem({ image, title, description, price }) {
-    function messageSeller() {
-      alert(`Messaging seller about: ${title}`);
+  const navigate = useNavigate();
+
+  function EquipmentItem({ sellerId, image, title, description, price }) {
+    function handleMessageSeller() {
+      navigate(`/chat/${sellerId}/${encodeURIComponent(title)}`);
     }
 
     return (
@@ -35,7 +40,9 @@ export function Equipment(props) {
         <h3 className="font1">{title}</h3>
         <p className="font1">{description}</p>
         <p className="font1 orange-text">Price: ${price}</p>
-        <button className="font1" onClick={messageSeller}>Message Seller</button>
+        <button className="font1" onClick={handleMessageSeller}>
+          Message Seller
+        </button>
       </div>
     );
   }
