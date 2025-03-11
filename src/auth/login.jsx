@@ -1,28 +1,30 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./auth.css"; // Updated from login.css to auth.css
 
 const Login = ({ mockDatabase, onLoginSuccess }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     const user = mockDatabase.find(
       (user) => user.username === username && user.password === password
     );
 
     if (user) {
       onLoginSuccess(user);
-      setError(""); 
+      setError("");
+      navigate("/");
     } else {
-      // If not valid, show error message
       setError("Wrong username or password. Please try again.");
     }
   };
 
   return (
-    <form onSubmit={handleLogin} style={{ maxWidth: "400px", margin: "0 auto" }}>
+    <form className="login-form" onSubmit={handleLogin}>
       <h2>Login</h2>
       <input
         type="text"
@@ -30,7 +32,6 @@ const Login = ({ mockDatabase, onLoginSuccess }) => {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
-        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
       />
       <input
         type="password"
@@ -38,22 +39,9 @@ const Login = ({ mockDatabase, onLoginSuccess }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
-        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
       />
-      <button
-        type="submit"
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#007bff",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Login
-      </button>
-      {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+      <button type="submit">Login</button>
+      {error && <p className="error-message">{error}</p>}
     </form>
   );
 };

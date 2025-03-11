@@ -6,15 +6,15 @@ import { Input } from "./input/input";
 import { Media } from "./media/media";
 import { Sell } from "./sell/sell";
 import Chatbox from "./chatbox/chatbox";
-import Signup from "./auth/Signup";
-import Login from "./auth/Login"; // Import Login component
+import Signup from "./auth/signup";
+import Login from "./auth/login"; 
 import "./index/index.css";
 
 function App() {
   const mockDatabase = [
-    { id: 1, username: "user1", password: "password123" },
+    { id: 1, username: "ldsryush", password: "Sanghwa1204" },
     { id: 2, username: "user2", password: "securePass456" },
-  ]; // Mock database
+  ]; 
 
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track login state
   const [currentUser, setCurrentUser] = useState(null); // Track logged-in user
