@@ -7,26 +7,27 @@ import { Media } from "./media/media";
 import { Sell } from "./sell/sell";
 import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
-import Login from "./auth/login"; 
+import Login from "./auth/login";
+import Products from "./products/products"; 
 import "./index/index.css";
 
 function App() {
   const mockDatabase = [
     { id: 1, username: "ldsryush", password: "Sanghwa1204" },
     { id: 2, username: "user2", password: "securePass456" },
-  ]; 
+  ];
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track login state
-  const [currentUser, setCurrentUser] = useState(null); // Track logged-in user
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [currentUser, setCurrentUser] = useState(null); 
 
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
-    setCurrentUser(user); // Save logged-in user's data
+    setCurrentUser(user); 
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setCurrentUser(null); // Clear user data
+    setCurrentUser(null);
   };
 
   return (
@@ -39,6 +40,7 @@ function App() {
         <NavLink to="/input">Input</NavLink>
         <NavLink to="/media">Media</NavLink>
         <NavLink to="/sell">Sell</NavLink>
+        <NavLink to="/products">Products</NavLink> {/* New link to Products */}
 
         {!isAuthenticated && (
           <>
@@ -76,6 +78,7 @@ function App() {
           <Route path="/input" element={<Input />} />
           <Route path="/media" element={<Media />} />
           <Route path="/sell" element={<Sell />} />
+          <Route path="/products" element={<Products />} /> {/* New Route for Products */}
           <Route path="/chat/:sellerId/:itemTitle" element={<Chatbox />} />
           <Route path="/signup" element={<Signup mockDatabase={mockDatabase} />} />
           <Route path="/login" element={<Login mockDatabase={mockDatabase} onLoginSuccess={handleLoginSuccess} />} />
