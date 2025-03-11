@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./auth.css"; 
 
 const Signup = ({ mockDatabase }) => {
   const [name, setName] = useState("");
@@ -8,24 +9,20 @@ const Signup = ({ mockDatabase }) => {
 
   const handleSignup = (e) => {
     e.preventDefault();
-
-    // Check if the email already exists in the mock database
     const existingUser = mockDatabase.find((user) => user.email === email);
     if (existingUser) {
       setMessage("Email is already registered!");
       return;
     }
-
-    // Add the user to the mock database
     mockDatabase.push({ id: Date.now(), name, email, password });
     setMessage("Sign-up successful!");
-    setName(""); // Clear the name input field
-    setEmail(""); // Clear the email input field
-    setPassword(""); // Clear the password input field
+    setName("");
+    setEmail("");
+    setPassword("");
   };
 
   return (
-    <form onSubmit={handleSignup} style={{ maxWidth: "400px", margin: "0 auto" }}>
+    <form className="login-form" onSubmit={handleSignup}>
       <h2>Sign Up</h2>
       <input
         type="text"
@@ -33,7 +30,6 @@ const Signup = ({ mockDatabase }) => {
         value={name}
         onChange={(e) => setName(e.target.value)}
         required
-        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
       />
       <input
         type="email"
@@ -41,7 +37,6 @@ const Signup = ({ mockDatabase }) => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
-        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
       />
       <input
         type="password"
@@ -49,22 +44,9 @@ const Signup = ({ mockDatabase }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
-        style={{ display: "block", width: "100%", marginBottom: "10px", padding: "8px" }}
       />
-      <button
-        type="submit"
-        style={{
-          padding: "10px 20px",
-          backgroundColor: "#007bff",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Sign Up
-      </button>
-      {message && <p style={{ marginTop: "10px", color: "green" }}>{message}</p>}
+      <button type="submit">Sign Up</button>
+      {message && <p className="error-message">{message}</p>}
     </form>
   );
 };

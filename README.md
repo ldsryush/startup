@@ -141,7 +141,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
 - [x] **All functionality implemented or mocked out** - I converted various HTML files into React components, utilizing useState for state management and useEffect for lifecycle events. The app includes components for login, play, marketplaces, input forms, media content, and selling items. I also integrated WebSocket and mock API calls for database and third-party services. Consistent CSS styling ensures a responsive design, transforming static HTML into a dynamic, interactive React application.
-- [x] **Hooks** - I implemented various React hooks to manage the state and lifecycle events of the components. For state management, I used useState to handle user inputs, item details, and other dynamic values. To handle lifecycle events and perform side effects, I utilized useEffect for tasks such as setting up WebSocket connections, fetching data from APIs, and updating the DOM for canvas drawings. 
+- [x] **Hooks** - I implemented various React hooks to manage the state and lifecycle events of the components. For useState i implemented an authorization for login that changes between login/"welcome user". For useEffect I added an chatbox simulation that mocks a conversation between a potential buyer and the seller when you click on message seller.
 
 ## 🚀 Service deliverable
 
