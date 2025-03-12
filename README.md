@@ -150,7 +150,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [ ] **Node.js/Express HTTP service** - I did not complete this part of the deliverable.
 - [ ] **Static middleware for frontend** - I did not complete this part of the deliverable.
 - [ ] **Calls to third party endpoints** - I did not complete this part of the deliverable.
-- [ ] **Backend service endpoints** - I did not complete this part of the deliverable.
+- [ ] **Backend service endpoints** - I have created endpoints for authentication, scores, and error handling.
 - [ ] **Frontend calls service endpoints** - I did not complete this part of the deliverable.
 
 ## 🚀 DB/Login deliverable

@@ -1,24 +1,37 @@
 import React, { useState } from "react";
-import "./auth.css"; 
+import "./auth.css";
 
-const Signup = ({ mockDatabase }) => {
+const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    const existingUser = mockDatabase.find((user) => user.email === email);
-    if (existingUser) {
-      setMessage("Email is already registered!");
-      return;
+
+    try {
+      const response = await fetch("/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }), 
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMessage(`Sign-up successful! Welcome, ${data.email}`);
+        setName("");
+        setEmail("");
+        setPassword("");
+      } else if (response.status === 409) {
+        setMessage("Email is already registered!");
+      } else {
+        setMessage("Failed to sign up. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+      setMessage("Error connecting to the server.");
     }
-    mockDatabase.push({ id: Date.now(), name, email, password });
-    setMessage("Sign-up successful!");
-    setName("");
-    setEmail("");
-    setPassword("");
   };
 
   return (
