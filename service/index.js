@@ -69,6 +69,9 @@ const verifyAuth = async (req, res, next) => {
 let apiRouter = express.Router();
 app.use('/api', apiRouter);
 
+// Serve static files from the 'public' directory
+app.use(express.static('public'));
+
 // Endpoints
 apiRouter.post('/auth/create', async (req, res) => {
   if (await findUser('email', req.body.email)) {
