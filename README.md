@@ -2,8 +2,8 @@
 they have +64 commits over on **main**, this branch is a continuation of that i promise<br>
 :)
 
-# Your startup name here
-test
+# Oyee Marketplace
+
 [My Notes](notes.md)
 *learned about the basics of github
 *created a ssh key
