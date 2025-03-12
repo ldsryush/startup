@@ -1,32 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // To make HTTP requests
 
 export function Apparel() {
-  const items = [
-    {
-      sellerId: "seller123",
-      image: "https://www.bluezonesports.com/prodimages/9912-TRUEBLACK-l.jpg",
-      title: "Snow Jacket",
-      description: "High-quality winter jacket to keep you warm.",
-      price: "99.99",
-    },
-    {
-      sellerId: "seller456",
-      image: "https://www.rei.com/media/879c8afd-6c09-4357-b761-dda9fd6faaa1.jpg?size=784x588",
-      title: "Snowboard Boots",
-      description: "Size 8 mens snowboard boots.",
-      price: "89.99",
-    },
-    {
-      sellerId: "seller789",
-      image: "https://www.rei.com/media/873614ad-e6d7-4f1f-89dd-153e236807da.jpg?size=784x588",
-      title: "Smith Goggles",
-      description: "Size medium like new.",
-      price: "129.99",
-    },
-  ];
-
+  const [items, setItems] = useState([]); // State to hold product data
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch products from the backend
+    axios.get("http://localhost:5000/api/products")
+      .then((response) => {
+        setItems(response.data); // Update state with fetched products
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
+  }, []); // Run once on component mount
 
   function ApparelItem({ sellerId, image, title, description, price }) {
     function handleMessageSeller() {
@@ -49,8 +38,8 @@ export function Apparel() {
   return (
     <div className="container">
       <h2 className="font3">Apparel Category</h2>
-      {items.map((item, index) => (
-        <ApparelItem key={index} {...item} />
+      {items.map((item) => (
+        <ApparelItem key={item.id} {...item} />
       ))}
     </div>
   );
