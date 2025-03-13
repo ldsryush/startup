@@ -68,7 +68,7 @@ function App() {
               <div>
                 <h1>Home</h1>
                 <img
-                  src="https://th.bing.com/th/id/OIP.EyzlDZLLcdmZYnihvwhEGwHaEK?rs=1&pid=ImgDetMain"
+                  src="/images/snowboarding.jpg"
                   alt="Home"
                   style={{ maxWidth: "100%", height: "auto" }}
                 />

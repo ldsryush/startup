@@ -5,7 +5,6 @@ export function Weather() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch weather data from the backend
     fetch('/api/weather')
       .then((response) => {
         if (!response.ok) {
@@ -14,8 +13,8 @@ export function Weather() {
         return response.json();
       })
       .then((data) => {
-        console.log("Weather data received:", data); // Debugging
-        setWeather(data); // Update weather state
+        console.log("Weather data received:", data); 
+        setWeather(data); 
       })
       .catch((error) => {
         console.error("Error fetching weather data:", error);
@@ -27,7 +26,7 @@ export function Weather() {
     <div>
       <h2>Current Weather in Orem</h2>
       {error ? (
-        <p>{error}</p> // Display error message if there's an issue
+        <p>{error}</p>
       ) : weather ? (
         <div>
           <p>Location: {weather.location}</p>
@@ -36,7 +35,7 @@ export function Weather() {
           <p>Weather Code: {weather.weatherCode}</p>
         </div>
       ) : (
-        <p>Loading weather data...</p> // Display loading message
+        <p>Loading weather data...</p> 
       )}
     </div>
   );

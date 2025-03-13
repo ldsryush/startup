@@ -7,7 +7,7 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 // Middleware
 app.use(cors()); // Enable CORS
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files if needed
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
 // Weather endpoint
 app.get('/api/weather', async (req, res) => {

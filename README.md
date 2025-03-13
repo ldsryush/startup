@@ -148,8 +148,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
 - [ ] **Node.js/Express HTTP service** 
-- [ ] **Static middleware for frontend** 
-- [ ] **Calls to third party endpoints**  .
+- [x] **Static middleware for frontend** - store all of my images from my website in one folder and call to it from multiple different parts from my frontend. 
+- [x] **Calls to third party endpoints** - Called to third party endpoints in backend to fetch the local weather in orem to display in my homepage. 
 - [ ] **Backend service endpoints** 
 - [ ] **Frontend calls service endpoints** 
 
