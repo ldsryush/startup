@@ -7,7 +7,9 @@ import './index.css';
 const HomePageImage = () => (
   <div style={{ textAlign: 'center', marginTop: '20px' }}>
     <h1>Oyee Marketplace</h1>
-  </div>
+    <h1>Sanghwa Ryu</h1>
+    <h1><a href="https://github.com/ldsryush/startup.git">github link</a></h1>
+</div>
 );
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
