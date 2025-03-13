@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 export function Weather() {
-  const [weather, setWeather] = useState(null);
+  const [temperature, setTemperature] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -13,8 +13,8 @@ export function Weather() {
         return response.json();
       })
       .then((data) => {
-        console.log("Weather data received:", data); 
-        setWeather(data); 
+        console.log("Weather data received:", data);
+        setTemperature(data.temperature); // Store the temperature only
       })
       .catch((error) => {
         console.error("Error fetching weather data:", error);
@@ -24,18 +24,13 @@ export function Weather() {
 
   return (
     <div>
-      <h2>Current Weather in Orem</h2>
+      <h2>Current Temperature</h2>
       {error ? (
         <p>{error}</p>
-      ) : weather ? (
-        <div>
-          <p>Location: {weather.location}</p>
-          <p>Temperature: {weather.temperature}°C</p>
-          <p>Precipitation Probability: {weather.precipitationProbability}%</p>
-          <p>Weather Code: {weather.weatherCode}</p>
-        </div>
+      ) : temperature !== null ? (
+        <p>{temperature}°C</p>
       ) : (
-        <p>Loading weather data...</p> 
+        <p>Loading weather data...</p>
       )}
     </div>
   );

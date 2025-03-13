@@ -9,13 +9,13 @@ import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
 import Products from "./products/products";
-import PasswordReset from "./auth/password-reset"; // Import PasswordReset component
-import { Weather } from "./weather"; // Import Weather component
+import PasswordReset from "./auth/password-reset"; 
+import { Weather } from "./weather"; 
 import "./index/index.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Login state tracking
-  const [currentUser, setCurrentUser] = useState(null); // Current logged-in user
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [currentUser, setCurrentUser] = useState(null); 
 
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);

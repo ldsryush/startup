@@ -12,13 +12,11 @@ const mockDatabase = [
 ];
 
 // Middleware
-app.use(cors()); // Enable CORS
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
-app.use(express.json()); // Parse JSON request bodies
+app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-// Authentication Endpoints
-
-// User Login
+// User login
 app.post('/api/users/login', (req, res) => {
   const { email, password } = req.body;
   const user = mockDatabase.find((user) => user.email === email && user.password === password);
@@ -30,24 +28,22 @@ app.post('/api/users/login', (req, res) => {
   res.json({ id: user.id, email: user.email, username: user.username });
 });
 
-// User Registration
+// User registration
 app.post('/api/users/register', (req, res) => {
   const { name, email, password } = req.body;
 
-  // Check if email is already registered
   const userExists = mockDatabase.find((user) => user.email === email);
   if (userExists) {
     return res.status(409).json({ error: 'Email is already registered' });
   }
 
-  // Add new user to the mock database
   const newUser = { id: mockDatabase.length + 1, username: name, email, password, resetCode: null };
   mockDatabase.push(newUser);
 
   res.status(201).json({ message: 'User registered successfully', email });
 });
 
-// Send Password Reset Code
+// Send reset code
 app.post('/api/users/send-reset-code', (req, res) => {
   const { email } = req.body;
   const user = mockDatabase.find((user) => user.email === email);
@@ -56,15 +52,14 @@ app.post('/api/users/send-reset-code', (req, res) => {
     return res.status(404).json({ error: 'Email not found' });
   }
 
-  // Generate a random reset code
-  const resetCode = Math.floor(100000 + Math.random() * 900000); // Six-digit code
+  const resetCode = Math.floor(100000 + Math.random() * 900000); 
   user.resetCode = resetCode;
 
-  console.log(`Reset code for ${email}: ${resetCode}`); // Mock sending email
+  console.log(`Reset code for ${email}: ${resetCode}`);
   res.json({ message: 'Reset code sent to your email' });
 });
 
-// Verify Reset Code
+// Verify reset code
 app.post('/api/users/verify-reset-code', (req, res) => {
   const { email, resetCode } = req.body;
   const user = mockDatabase.find((user) => user.email === email && user.resetCode === parseInt(resetCode, 10));
@@ -76,18 +71,14 @@ app.post('/api/users/verify-reset-code', (req, res) => {
   res.json({ message: 'Reset code verified' });
 });
 
-// Weather Endpoint
+// Weather endpoint (using new API)
 app.get('/api/weather', async (req, res) => {
   try {
     const fetch = (await import('node-fetch')).default;
 
-    // Orem's Latitude and Longitude
-    const latitude = 40.2969; // Orem latitude
-    const longitude = -111.6946; // Orem longitude
+    const url = 'https://api.data.gov.sg/v1/environment/air-temperature';
 
-    // Open-Meteo API URL with query parameters
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation_probability,weather_code`;
-
+    // Fetch data from the new API
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -96,16 +87,17 @@ app.get('/api/weather', async (req, res) => {
 
     const data = await response.json();
 
-    // Parse the data to extract required information
-    const currentTemperature = data.hourly.temperature_2m[0];
-    const precipitationProbability = data.hourly.precipitation_probability[0];
-    const weatherCode = data.hourly.weather_code[0];
+    // Extract relevant data (adjust as necessary based on API response structure)
+    const items = data.items?.[0]?.readings || [];
+    const firstStation = items[0]; // Use the first station's data
+
+    if (!firstStation) {
+      throw new Error("No temperature data available");
+    }
 
     res.json({
-      location: "Orem",
-      temperature: currentTemperature,
-      precipitationProbability: precipitationProbability,
-      weatherCode: weatherCode,
+      location: firstStation.station_id || "Unknown location",
+      temperature: firstStation.value || "N/A",
     });
   } catch (error) {
     console.error('Error fetching weather data:', error);
