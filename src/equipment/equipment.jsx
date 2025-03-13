@@ -1,58 +1,67 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import "./equipment.css";
+import React, { useEffect, useState } from 'react';
 
 export function Equipment() {
-  const items = [
-    {
-      sellerId: "seller001",
-      image: "https://www.tactics.com/a/ejjk/2/burton-family-tree-power-wagon-snowboard-1.webp",
-      title: "Burton Snowboard",
-      description: "Size 154cm",
-      price: "190",
-    },
-    {
-      sellerId: "seller002",
-      image: "https://cdn.skatepro.com/product/520/k2-disruption-mti-skis-xcell-12-tcx-bindings-i2.webp",
-      title: "K2 Skis",
-      description: "Size 160cm.",
-      price: "289.99",
-    },
-    {
-      sellerId: "seller003",
-      image: "https://cdn.skatepro.com/product/520/black-crows-duos-freebird-adjustable-ski-poles-v1.webp",
-      title: "Ski poles",
-      description: "Like new.",
-      price: "59.99",
-    },
-  ];
+  const [exchangeRates, setExchangeRates] = useState(null); // Initialize to null
+  const [baseCurrency, setBaseCurrency] = useState('USD'); // Selected currency
+  const [priceInSelectedCurrency, setPriceInSelectedCurrency] = useState(100); // Example product price in USD
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    // Fetch exchange rates from the backend
+    fetch('/api/exchange-rates')
+      .then((response) => {
+        console.log('Raw response:', response);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Fetched exchange rates:', data.rates);
+        setExchangeRates(data.rates); // Save exchange rates
+      })
+      .catch((error) => {
+        console.error('Error fetching exchange rates:', error);
+      });
+  }, []);
 
-  function EquipmentItem({ sellerId, image, title, description, price }) {
-    function handleMessageSeller() {
-      navigate(`/chat/${sellerId}/${encodeURIComponent(title)}`);
+  // Function to convert price to the selected currency
+  const convertPrice = (priceInUSD) => {
+    if (exchangeRates && exchangeRates[baseCurrency]) {
+      return (priceInUSD * exchangeRates[baseCurrency]).toFixed(2);
     }
-
-    return (
-      <div className="apparel-item">
-        <img src={image} width="300" height="250" alt={title} />
-        <h3 className="font1">{title}</h3>
-        <p className="font1">{description}</p>
-        <p className="font1 orange-text">Price: ${price}</p>
-        <button className="font1" onClick={handleMessageSeller}>
-          Message Seller
-        </button>
-      </div>
-    );
-  }
+    return priceInUSD.toFixed(2); // Default to USD if rates aren't available
+  };
 
   return (
-    <div className="container">
-      <h2 className="font3">Equipments</h2>
-      {items.map((item, index) => (
-        <EquipmentItem key={index} {...item} />
-      ))}
+    <div>
+      <h2>Product Prices in Multiple Currencies</h2>
+
+      {/* Show loading message or dropdown */}
+      {!exchangeRates ? (
+        <p>Loading currencies...</p>
+      ) : (
+        <div>
+          <label htmlFor="currency-select">Select a currency:</label>
+          <select
+            id="currency-select"
+            value={baseCurrency}
+            onChange={(e) => setBaseCurrency(e.target.value)}
+          >
+            {Object.keys(exchangeRates).map((currency) => (
+              <option key={currency} value={currency}>
+                {currency}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* Display the product price */}
+      <div>
+        <p>
+          Product Price: {convertPrice(priceInSelectedCurrency)} {baseCurrency}
+        </p>
+      </div>
     </div>
   );
 }

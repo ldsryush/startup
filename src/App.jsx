@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes } from "react-router-dom";
 import { Apparel } from "./apparel/apparel";
 import { Equipment } from "./equipment/equipment";
 import { Input } from "./input/input";
@@ -10,6 +10,7 @@ import Signup from "./auth/signup";
 import Login from "./auth/login";
 import Products from "./products/products";
 import PasswordReset from "./auth/password-reset"; // Import PasswordReset component
+import { Weather } from "./weather"; // Import Weather component
 import "./index/index.css";
 
 function App() {
@@ -41,7 +42,7 @@ function App() {
         <NavLink to="/input">Input</NavLink>
         <NavLink to="/media">Media</NavLink>
         <NavLink to="/sell">Sell</NavLink>
-        <NavLink to="/products">Products</NavLink> {/* Products Link */}
+        <NavLink to="/products">Products</NavLink>
 
         {!isAuthenticated && (
           <>
@@ -71,6 +72,7 @@ function App() {
                   alt="Home"
                   style={{ maxWidth: "100%", height: "auto" }}
                 />
+                <Weather /> {/* Display weather on the homepage */}
               </div>
             }
           />
@@ -79,10 +81,10 @@ function App() {
           <Route path="/input" element={<Input />} />
           <Route path="/media" element={<Media />} />
           <Route path="/sell" element={<Sell />} />
-          <Route path="/products" element={<Products />} /> {/* Route for Products */}
+          <Route path="/products" element={<Products />} />
           <Route path="/chat/:sellerId/:itemTitle" element={<Chatbox />} />
           <Route path="/signup" element={<Signup mockDatabase={mockDatabase} />} />
-          <Route path="/reset-password" element={<PasswordReset />} /> {/* Route for PasswordReset */}
+          <Route path="/reset-password" element={<PasswordReset />} />
           <Route path="/login" element={<Login mockDatabase={mockDatabase} onLoginSuccess={handleLoginSuccess} />} />
         </Routes>
       </main>

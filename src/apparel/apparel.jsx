@@ -7,10 +7,13 @@ export function Apparel() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch products from the backend
-    axios.get("http://localhost:5000/api/products")
+    // Fetch all products from the backend
+    axios.get("http://localhost:5000/api/products") // Fetch combined endpoint
       .then((response) => {
-        setItems(response.data); // Update state with fetched products
+        const apparelProducts = response.data.filter(
+          (item) => item.category === "Apparel"
+        );
+        setItems(apparelProducts); // Filter for apparel products
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
