@@ -14,7 +14,7 @@ export function Weather() {
       })
       .then((data) => {
         console.log("Weather data received:", data);
-        setTemperature(data.temperature); // Store the temperature only
+        setTemperature(data.temperature); 
       })
       .catch((error) => {
         console.error("Error fetching weather data:", error);
