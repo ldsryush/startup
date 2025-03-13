@@ -3,7 +3,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import "./auth.css"; 
 
 const Login = ({ onLoginSuccess }) => {
-  const [email, setEmail] = useState(""); // Changed from "username" to "email"
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -20,11 +20,11 @@ const Login = ({ onLoginSuccess }) => {
 
       if (response.ok) {
         const data = await response.json();
-        onLoginSuccess(data); // Pass user data to parent component
+        onLoginSuccess({ id: data.id, email: data.email, username: data.username }); // Include additional user data
         setError("");
         navigate("/"); // Redirect to home page
       } else {
-        setError("Wrong email or password. Please try again.");
+        setError("Invalid email or password. Please try again.");
       }
     } catch (error) {
       console.error("Error during login:", error);
@@ -36,7 +36,7 @@ const Login = ({ onLoginSuccess }) => {
     <form className="login-form" onSubmit={handleLogin}>
       <h2>Login</h2>
       <input
-        type="email" // Changed to "email" for consistency with your backend
+        type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}

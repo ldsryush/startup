@@ -5,11 +5,78 @@ const path = require('path');
 const app = express();
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
+// Mock database
+const mockDatabase = [
+  { id: 1, username: "ldsryush", email: "ldsryush@example.com", password: "Sanghwa1204", resetCode: null },
+  { id: 2, username: "user2", email: "user2@example.com", password: "securePass456", resetCode: null },
+];
+
 // Middleware
 app.use(cors()); // Enable CORS
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
+app.use(express.json()); // Parse JSON request bodies
 
-// Weather endpoint
+// Authentication Endpoints
+
+// User Login
+app.post('/api/users/login', (req, res) => {
+  const { email, password } = req.body;
+  const user = mockDatabase.find((user) => user.email === email && user.password === password);
+
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid email or password' });
+  }
+
+  res.json({ id: user.id, email: user.email, username: user.username });
+});
+
+// User Registration
+app.post('/api/users/register', (req, res) => {
+  const { name, email, password } = req.body;
+
+  // Check if email is already registered
+  const userExists = mockDatabase.find((user) => user.email === email);
+  if (userExists) {
+    return res.status(409).json({ error: 'Email is already registered' });
+  }
+
+  // Add new user to the mock database
+  const newUser = { id: mockDatabase.length + 1, username: name, email, password, resetCode: null };
+  mockDatabase.push(newUser);
+
+  res.status(201).json({ message: 'User registered successfully', email });
+});
+
+// Send Password Reset Code
+app.post('/api/users/send-reset-code', (req, res) => {
+  const { email } = req.body;
+  const user = mockDatabase.find((user) => user.email === email);
+
+  if (!user) {
+    return res.status(404).json({ error: 'Email not found' });
+  }
+
+  // Generate a random reset code
+  const resetCode = Math.floor(100000 + Math.random() * 900000); // Six-digit code
+  user.resetCode = resetCode;
+
+  console.log(`Reset code for ${email}: ${resetCode}`); // Mock sending email
+  res.json({ message: 'Reset code sent to your email' });
+});
+
+// Verify Reset Code
+app.post('/api/users/verify-reset-code', (req, res) => {
+  const { email, resetCode } = req.body;
+  const user = mockDatabase.find((user) => user.email === email && user.resetCode === parseInt(resetCode, 10));
+
+  if (!user) {
+    return res.status(400).json({ error: 'Invalid reset code' });
+  }
+
+  res.json({ message: 'Reset code verified' });
+});
+
+// Weather Endpoint
 app.get('/api/weather', async (req, res) => {
   try {
     const fetch = (await import('node-fetch')).default;

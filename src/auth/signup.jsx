@@ -25,6 +25,8 @@ const Signup = () => {
         setPassword("");
       } else if (response.status === 409) {
         setMessage("Email is already registered!");
+      } else if (response.status >= 500) {
+        setMessage("Server error. Please try again later.");
       } else {
         setMessage("Failed to sign up. Please try again.");
       }

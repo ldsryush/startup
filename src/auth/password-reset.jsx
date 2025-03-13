@@ -7,10 +7,10 @@ const PasswordReset = () => {
 
   const handleSendResetCode = async () => {
     try {
-      const response = await fetch("http://localhost:3000/users", {
+      const response = await fetch("/api/users/send-reset-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email }),
       });
       if (response.ok) {
         setMessage("Reset code sent to your email!");
@@ -25,11 +25,13 @@ const PasswordReset = () => {
 
   const handleVerifyResetCode = async () => {
     try {
-      const response = await fetch("http://localhost:3000/users");
-      const users = await response.json();
-      const user = users.find((user) => user.email === email && user.resetCode === resetCode);
+      const response = await fetch("/api/users/verify-reset-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, resetCode }),
+      });
 
-      if (user) {
+      if (response.ok) {
         setMessage("Reset code verified!");
       } else {
         setMessage("Invalid reset code. Please check and try again.");

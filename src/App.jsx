@@ -14,11 +14,6 @@ import { Weather } from "./weather"; // Import Weather component
 import "./index/index.css";
 
 function App() {
-  const mockDatabase = [
-    { id: 1, username: "ldsryush", password: "Sanghwa1204" },
-    { id: 2, username: "user2", password: "securePass456" },
-  ];
-
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Login state tracking
   const [currentUser, setCurrentUser] = useState(null); // Current logged-in user
 
@@ -67,6 +62,7 @@ function App() {
             element={
               <div>
                 <h1>Home</h1>
+                {isAuthenticated && <p>Welcome back, {currentUser?.username || currentUser?.email}!</p>}
                 <img
                   src="/images/snowboarding.jpg"
                   alt="Home"
@@ -80,12 +76,30 @@ function App() {
           <Route path="/equipment" element={<Equipment />} />
           <Route path="/input" element={<Input />} />
           <Route path="/media" element={<Media />} />
-          <Route path="/sell" element={<Sell />} />
+          <Route
+            path="/sell"
+            element={
+              isAuthenticated ? (
+                <Sell />
+              ) : (
+                <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
+              )
+            }
+          />
           <Route path="/products" element={<Products />} />
-          <Route path="/chat/:sellerId/:itemTitle" element={<Chatbox />} />
-          <Route path="/signup" element={<Signup mockDatabase={mockDatabase} />} />
+          <Route
+            path="/chat/:sellerId/:itemTitle"
+            element={
+              isAuthenticated ? (
+                <Chatbox />
+              ) : (
+                <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
+              )
+            }
+          />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<PasswordReset />} />
-          <Route path="/login" element={<Login mockDatabase={mockDatabase} onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
         </Routes>
       </main>
     </div>
