@@ -147,11 +147,11 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Node.js/Express HTTP service** 
+- [x] **Node.js/Express HTTP service** created a backend server that manages my images, calling in a 3rd party service, and etc.
 - [x] **Static middleware for frontend** - store all of my images from my website in one folder and call to it from multiple different parts from my frontend. 
 - [x] **Calls to third party endpoints** - Called to third party endpoints in backend to fetch the local weather in orem to display in my homepage. 
-- [ ] **Backend service endpoints** 
-- [ ] **Frontend calls service endpoints** 
+- [x] **Backend service endpoints** - user authentication that lets users sign up, reset password by sending reset code to backend terminal, and login to sell items and chat with other users.
+- [x] **Frontend calls service endpoints** - user authentication also applies here as it uses both backend and frontend. Let users signup, reset password, certain things locked for only users like selling items and chatting!
 
 ## 🚀 DB/Login deliverable
 
