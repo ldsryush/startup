@@ -1,83 +1,111 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { connectToDatabase } = require('./database'); // Import the DB connection function
 
 const app = express();
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
-
-// Mock database
-const mockDatabase = [
-  { id: 1, username: "ldsryush", email: "ldsryush@example.com", password: "Sanghwa1204", resetCode: null },
-  { id: 2, username: "user2", email: "user2@example.com", password: "securePass456", resetCode: null },
-];
 
 // Middleware
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
+/*
+  Instead of using a hard-coded mock database, we will connect
+  to a MongoDB database and use a 'users' collection. Once the
+  connection is established, we store the db instance in app.locals.
+*/
+
 // User login
-app.post('/api/users/login', (req, res) => {
-  const { email, password } = req.body;
-  const user = mockDatabase.find((user) => user.email === email && user.password === password);
+app.post('/api/users/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const db = req.app.locals.db;
+    const user = await db.collection('users').findOne({ email, password });
 
-  if (!user) {
-    return res.status(401).json({ error: 'Invalid email or password' });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    res.json({ id: user._id, email: user.email, username: user.username });
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-
-  res.json({ id: user.id, email: user.email, username: user.username });
 });
 
 // User registration
-app.post('/api/users/register', (req, res) => {
-  const { name, email, password } = req.body;
+app.post('/api/users/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const db = req.app.locals.db;
+    const userExists = await db.collection('users').findOne({ email });
 
-  const userExists = mockDatabase.find((user) => user.email === email);
-  if (userExists) {
-    return res.status(409).json({ error: 'Email is already registered' });
+    if (userExists) {
+      return res.status(409).json({ error: 'Email is already registered' });
+    }
+
+    const newUser = { username: name, email, password, resetCode: null };
+    await db.collection('users').insertOne(newUser);
+
+    res.status(201).json({ message: 'User registered successfully', email });
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-
-  const newUser = { id: mockDatabase.length + 1, username: name, email, password, resetCode: null };
-  mockDatabase.push(newUser);
-
-  res.status(201).json({ message: 'User registered successfully', email });
 });
 
 // Send reset code
-app.post('/api/users/send-reset-code', (req, res) => {
-  const { email } = req.body;
-  const user = mockDatabase.find((user) => user.email === email);
+app.post('/api/users/send-reset-code', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const db = req.app.locals.db;
+    const resetCode = Math.floor(100000 + Math.random() * 900000);
 
-  if (!user) {
-    return res.status(404).json({ error: 'Email not found' });
+    // Update the user document with a reset code
+    const result = await db.collection('users').findOneAndUpdate(
+      { email },
+      { $set: { resetCode } },
+      { returnDocument: 'after' }
+    );
+
+    if (!result.value) {
+      return res.status(404).json({ error: 'Email not found' });
+    }
+
+    console.log(`Reset code for ${email}: ${resetCode}`);
+    res.json({ message: 'Reset code sent to your email' });
+  } catch (error) {
+    console.error('Error sending reset code:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-
-  const resetCode = Math.floor(100000 + Math.random() * 900000); 
-  user.resetCode = resetCode;
-
-  console.log(`Reset code for ${email}: ${resetCode}`);
-  res.json({ message: 'Reset code sent to your email' });
 });
 
 // Verify reset code
-app.post('/api/users/verify-reset-code', (req, res) => {
-  const { email, resetCode } = req.body;
-  const user = mockDatabase.find((user) => user.email === email && user.resetCode === parseInt(resetCode, 10));
+app.post('/api/users/verify-reset-code', async (req, res) => {
+  try {
+    const { email, resetCode } = req.body;
+    const db = req.app.locals.db;
+    const user = await db.collection('users').findOne({ email, resetCode: parseInt(resetCode, 10) });
 
-  if (!user) {
-    return res.status(400).json({ error: 'Invalid reset code' });
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid reset code' });
+    }
+
+    res.json({ message: 'Reset code verified' });
+  } catch (error) {
+    console.error('Error verifying reset code:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-
-  res.json({ message: 'Reset code verified' });
 });
 
 // Weather endpoint (using new API)
 app.get('/api/weather', async (req, res) => {
   try {
+    // Dynamically import node-fetch
     const fetch = (await import('node-fetch')).default;
-
     const url = 'https://api.data.gov.sg/v1/environment/air-temperature';
-
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -85,9 +113,8 @@ app.get('/api/weather', async (req, res) => {
     }
 
     const data = await response.json();
-
     const items = data.items?.[0]?.readings || [];
-    const firstStation = items[0]; 
+    const firstStation = items[0];
 
     if (!firstStation) {
       throw new Error("No temperature data available");
@@ -103,7 +130,17 @@ app.get('/api/weather', async (req, res) => {
   }
 });
 
+// Initialize the database connection and then start the server
+connectToDatabase()
+  .then((client) => {
+    const db = client.db('mydatabase'); // Specify your database name
+    app.locals.db = db; // Save the db instance for use in route handlers
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+    app.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Failed to initialize database connection:', error);
+    process.exit(1);
+  });
