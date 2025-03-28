@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { Apparel } from "./apparel/apparel";
 import { Equipment } from "./equipment/equipment";
-import { Input } from "./input/input";
-import { Media } from "./media/media";
 import { Sell } from "./sell/sell";
 import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
-import Products from "./products/products";
 import PasswordReset from "./auth/password-reset"; 
+import Products from "./products/products";
 import { Weather } from "./weather"; 
 import "./index/index.css";
 
@@ -34,8 +32,6 @@ function App() {
         <NavLink to="/">Home</NavLink>
         <NavLink to="/apparel">Apparel</NavLink>
         <NavLink to="/equipment">Equipment</NavLink>
-        <NavLink to="/input">Input</NavLink>
-        <NavLink to="/media">Media</NavLink>
         <NavLink to="/sell">Sell</NavLink>
         <NavLink to="/products">Products</NavLink>
 
@@ -48,7 +44,7 @@ function App() {
 
         {isAuthenticated && (
           <>
-            <span>Welcome, {currentUser?.username}!</span>
+            <span>Welcome, {currentUser?.username || "User"}!</span>
             <button onClick={handleLogout}>Logout</button>
           </>
         )}
@@ -74,8 +70,6 @@ function App() {
           />
           <Route path="/apparel" element={<Apparel />} />
           <Route path="/equipment" element={<Equipment />} />
-          <Route path="/input" element={<Input />} />
-          <Route path="/media" element={<Media />} />
           <Route
             path="/sell"
             element={

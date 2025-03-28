@@ -1,67 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export function Equipment() {
-  const [exchangeRates, setExchangeRates] = useState(null); // Initialize to null
-  const [baseCurrency, setBaseCurrency] = useState('USD'); // Selected currency
-  const [priceInSelectedCurrency, setPriceInSelectedCurrency] = useState(100); // Example product price in USD
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch exchange rates from the backend
-    fetch('/api/exchange-rates')
+    // Fetch products from the backend
+    axios
+      .get("http://localhost:5000/api/products") // Replace with your live API URL if deployed
       .then((response) => {
-        console.log('Raw response:', response);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+        // Filter items where category is "Equipment"
+        const equipmentItems = response.data.filter((item) => item.category === "Equipment");
+        setItems(equipmentItems);
+        setLoading(false);
       })
-      .then((data) => {
-        console.log('Fetched exchange rates:', data.rates);
-        setExchangeRates(data.rates); // Save exchange rates
-      })
-      .catch((error) => {
-        console.error('Error fetching exchange rates:', error);
+      .catch((err) => {
+        console.error("Error fetching equipment items:", err);
+        setError("Failed to load equipment items. Please try again later.");
+        setLoading(false);
       });
   }, []);
 
-  // Function to convert price to the selected currency
-  const convertPrice = (priceInUSD) => {
-    if (exchangeRates && exchangeRates[baseCurrency]) {
-      return (priceInUSD * exchangeRates[baseCurrency]).toFixed(2);
-    }
-    return priceInUSD.toFixed(2); // Default to USD if rates aren't available
-  };
+  if (loading) {
+    return <div>Loading equipment items...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div>
-      <h2>Product Prices in Multiple Currencies</h2>
-
-      {/* Show loading message or dropdown */}
-      {!exchangeRates ? (
-        <p>Loading currencies...</p>
+    <div className="equipment-container">
+      <h2 className="font3">Equipment Listings</h2>
+      {items.length === 0 ? (
+        <p>No equipment items found.</p>
       ) : (
-        <div>
-          <label htmlFor="currency-select">Select a currency:</label>
-          <select
-            id="currency-select"
-            value={baseCurrency}
-            onChange={(e) => setBaseCurrency(e.target.value)}
-          >
-            {Object.keys(exchangeRates).map((currency) => (
-              <option key={currency} value={currency}>
-                {currency}
-              </option>
-            ))}
-          </select>
-        </div>
+        <ul className="equipment-list">
+          {items.map((item) => (
+            <li key={item.id || item._id} className="equipment-item">
+              <h3>{item.title || item.name}</h3>
+              <p>{item.description}</p>
+              <p>Price: ${item.price}</p>
+              {/* Additional item details can be rendered here */}
+            </li>
+          ))}
+        </ul>
       )}
-
-      {/* Display the product price */}
-      <div>
-        <p>
-          Product Price: {convertPrice(priceInSelectedCurrency)} {baseCurrency}
-        </p>
-      </div>
     </div>
   );
 }
+
+export default Equipment;

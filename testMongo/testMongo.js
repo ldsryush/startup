@@ -2,22 +2,27 @@
 const { MongoClient } = require('mongodb');
 const config = require('./dbConfig.json');
 
-// Construct the connection string (note the absence of a trailing slash)
+// Construct the connection string (note: no trailing slash)
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
-const client = new MongoClient(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+
+// Create a new MongoClient without deprecated options
+const client = new MongoClient(url);
 
 async function main() {
   try {
+    // Connect to the MongoDB server
     await client.connect();
-    const db = client.db('rental'); // Use or create the 'rental' database
-    const collection = db.collection('house'); // Use or create the 'house' collection
+    const db = client.db('rental'); // Use (or create) the 'rental' database
+    const collection = db.collection('house'); // Use (or create) the 'house' collection
 
-    // Test the connection with a ping
-    await db.command({ ping: 1 });
-    console.log(`DB connected to ${config.hostname}`);
+    // Test the connection with a ping command
+    try {
+      await db.command({ ping: 1 });
+      console.log(`DB connected to ${config.hostname}`);
+    } catch (ex) {
+      console.log(`Connection failed to ${url} because ${ex.message}`);
+      process.exit(1);
+    }
 
     // --- Insert ---
     const house = {
@@ -43,7 +48,7 @@ async function main() {
     // --- Delete ---
     const deleteResult = await collection.deleteMany(query);
     console.log(`Deleted ${deleteResult.deletedCount} document(s) matching the query`);
-
+  
   } catch (error) {
     console.error(`Database error: ${error.message}`);
   } finally {

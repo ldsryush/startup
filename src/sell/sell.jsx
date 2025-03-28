@@ -1,19 +1,43 @@
 import React from 'react';
+import axios from 'axios';
 
 export function Sell(props) {
   const [itemName, setItemName] = React.useState('');
   const [itemDescription, setItemDescription] = React.useState('');
   const [itemPrice, setItemPrice] = React.useState('');
+  const [itemCategory, setItemCategory] = React.useState('Apparel'); // Dropdown for category
   const [itemImage, setItemImage] = React.useState(null);
+  const [successMessage, setSuccessMessage] = React.useState('');
+  const [errorMessage, setErrorMessage] = React.useState('');
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    alert('Item listed for sale');
+
+    const formData = new FormData();
+    formData.append('name', itemName);
+    formData.append('description', itemDescription);
+    formData.append('price', itemPrice);
+    formData.append('category', itemCategory);
+    formData.append('image', itemImage);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/products', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setSuccessMessage('Item listed successfully!');
+      setErrorMessage('');
+    } catch (error) {
+      console.error('Error listing item:', error);
+      setErrorMessage('Failed to list the item. Please try again.');
+      setSuccessMessage('');
+    }
   }
 
   return (
     <div className="container">
       <h2 className="font3">Sell Your Item</h2>
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
+      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="font3" htmlFor="item-name">Item Name:</label>
@@ -50,7 +74,20 @@ export function Sell(props) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="item-image">Image:</label>
+          <label className="font3" htmlFor="item-category">Category:</label>
+          <select
+            id="item-category"
+            name="item-category"
+            value={itemCategory}
+            onChange={(e) => setItemCategory(e.target.value)}
+            required
+          >
+            <option value="Apparel">Apparel</option>
+            <option value="Equipment">Equipment</option>
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="font3" htmlFor="item-image">Image:</label>
           <input
             type="file"
             id="item-image"
@@ -67,3 +104,5 @@ export function Sell(props) {
     </div>
   );
 }
+
+export default Sell;
