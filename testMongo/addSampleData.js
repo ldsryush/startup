@@ -6,32 +6,32 @@ const uri = "mongodb+srv://ldsryush:Sanghwa1204@cluster0.zkv4yq6.mongodb.net/myd
 
 const sampleProducts = [
   {
-    name: "Running Shoes",
-    description: "Lightweight and durable running shoes for athletes.",
+    name: "Snowboarding boots",
+    description: "2022 snowboard boots",
     price: 59.99,
     category: "Apparel",
-    image: "/path/to/running-shoes.jpg"
+    image: "/public/images/boots.jpg"
   },
   {
-    name: "Winter Jacket",
-    description: "Warm and waterproof jacket, perfect for winter activities.",
+    name: "Snowboard Jacket",
+    description: "Warm and waterproof jacket, perfect for winter activities. Size L.",
     price: 99.99,
     category: "Apparel",
-    image: "/path/to/winter-jacket.jpg"
+    image: "/public/images/jacket.jpg"
   },
   {
-    name: "Hiking Backpack",
-    description: "A spacious backpack with multiple compartments for outdoor enthusiasts.",
-    price: 79.99,
+    name: "Burton Snowboard 154",
+    description: "Great beginner snowboard size 154cm",
+    price: 179.99,
     category: "Equipment",
-    image: "/path/to/hiking-backpack.jpg"
+    image: "/public/images/snowboard.jpg"
   },
   {
-    name: "Tent",
-    description: "Two-person lightweight tent, ideal for camping trips.",
-    price: 129.99,
+    name: "K2 Skis 160",
+    description: "Great condition skis, size 160cm.",
+    price: 229.99,
     category: "Equipment",
-    image: "/path/to/tent.jpg"
+    image: "/public/images/skis.jpg"
   }
 ];
 
