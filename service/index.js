@@ -1,16 +1,33 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-// Adjust the import path to point to your testMongo directory where database.js is located.
+// Adjust the import path as needed to point to your testMongo directory where database.js is located.
 const { connectToDatabase } = require('../testMongo/database');
 
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Determine the absolute path to the public folder (which is located one level up from the service folder)
+const staticPath = path.join(__dirname, '../public');
+console.log('Serving static files from:', staticPath);
+
 // Middleware
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+// Serve static files from the public folder under the '/public' URL prefix.
+// This means a file at <project-root>/public/images/boots.jpg is accessible at:
+// http://localhost:4000/public/images/boots.jpg
+app.use('/public', express.static(staticPath));
+
+// Test endpoint to verify static file serving works
+app.get('/test-image', (req, res) => {
+  res.sendFile(path.join(staticPath, 'images', 'boots.jpg'));
+});
+
+// Simple test endpoint
+app.get("/", (req, res) => {
+  res.send("Server is up and running!");
+});
 
 // User login endpoint
 app.post('/api/users/login', async (req, res) => {
@@ -92,7 +109,6 @@ app.post('/api/users/verify-reset-code', async (req, res) => {
 // Weather endpoint (calls an external API for air temperature)
 app.get('/api/weather', async (req, res) => {
   try {
-    // Dynamically import node-fetch
     const fetch = (await import('node-fetch')).default;
     const url = 'https://api.data.gov.sg/v1/environment/air-temperature';
     const response = await fetch(url);
@@ -115,12 +131,22 @@ app.get('/api/weather', async (req, res) => {
   }
 });
 
+// GET endpoint to fetch all products (for the Equipment component)
+app.get('/api/products', async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const products = await db.collection('products').find({}).toArray();
+    res.json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
+
 // Initialize the database connection and then start the server.
 connectToDatabase()
   .then((client) => {
-    // Here we switch to the working database for our service. For example, 'mydatabase'.
     const db = client.db('mydatabase');
-    // Save the database instance in app.locals so that route handlers can use it.
     app.locals.db = db;
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);

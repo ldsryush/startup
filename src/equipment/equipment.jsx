@@ -7,17 +7,27 @@ export function Equipment() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch products from the backend
+    // Using a relative URL so that the proxy handles forwarding
+    console.log("Fetching products from backend via relative URL...");
     axios
-      .get("http://localhost:5000/api/products") // Replace with your live API URL if deployed
+      .get("/api/products")
       .then((response) => {
+        console.log("Fetched products:", response.data);
         // Filter items where category is "Equipment"
-        const equipmentItems = response.data.filter((item) => item.category === "Equipment");
+        const equipmentItems = response.data.filter(
+          (item) => item.category === "Equipment"
+        );
         setItems(equipmentItems);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching equipment items:", err);
+        if (err.response) {
+          console.error("Error fetching equipment items (response):", err.response.data);
+        } else if (err.request) {
+          console.error("Error fetching equipment items (no response):", err.request);
+        } else {
+          console.error("Error fetching equipment items:", err.message);
+        }
         setError("Failed to load equipment items. Please try again later.");
         setLoading(false);
       });
@@ -39,11 +49,10 @@ export function Equipment() {
       ) : (
         <ul className="equipment-list">
           {items.map((item) => (
-            <li key={item.id || item._id} className="equipment-item">
-              <h3>{item.title || item.name}</h3>
+            <li key={item._id} className="equipment-item">
+              <h3>{item.name}</h3>
               <p>{item.description}</p>
               <p>Price: ${item.price}</p>
-              {/* Additional item details can be rendered here */}
             </li>
           ))}
         </ul>
