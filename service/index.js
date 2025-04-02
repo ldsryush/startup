@@ -1,27 +1,32 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-// Adjust the import path as needed to point to your testMongo directory where database.js is located.
 const { connectToDatabase } = require('../testMongo/database');
 
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Determine the absolute path to the public folder (which is located one level up from the service folder)
-const staticPath = path.join(__dirname, '../public');
+// Resolve the absolute path to the public folder
+const staticPath = path.resolve('/workspaces/startup/public');
 console.log('Serving static files from:', staticPath);
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-// Serve static files from the public folder under the '/public' URL prefix.
-// This means a file at <project-root>/public/images/boots.jpg is accessible at:
-// http://localhost:4000/public/images/boots.jpg
+// Serve static files under the '/public' URL prefix
 app.use('/public', express.static(staticPath));
 
-// Test endpoint to verify static file serving works
-app.get('/test-image', (req, res) => {
-  res.sendFile(path.join(staticPath, 'images', 'boots.jpg'));
+// Test endpoint to manually serve an image
+app.get('/manual-image', (req, res) => {
+  const imagePath = path.join(staticPath, 'images', 'boots.jpg');
+  console.log("Trying to serve file from:", imagePath);
+
+  res.sendFile(imagePath, (err) => {
+    if (err) {
+      console.error("Error sending file:", err);
+      res.status(500).send("File not found or inaccessible");
+    }
+  });
 });
 
 // Simple test endpoint
@@ -34,7 +39,7 @@ app.post('/api/users/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const db = req.app.locals.db;
-    const user = await db.collection('users').findOne({ email, password }); // Reminder: hash passwords in production!
+    const user = await db.collection('users').findOne({ email, password });
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -50,12 +55,10 @@ app.post('/api/users/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const db = req.app.locals.db;
-    // Check if a user with the same email exists.
     const userExists = await db.collection('users').findOne({ email });
     if (userExists) {
       return res.status(409).json({ error: 'Email is already registered' });
     }
-    // Create a new user (in production, hash the password before storing it!)
     const newUser = { username: name, email, password, resetCode: null };
     await db.collection('users').insertOne(newUser);
     res.status(201).json({ message: 'User registered successfully', email });
@@ -71,7 +74,6 @@ app.post('/api/users/send-reset-code', async (req, res) => {
     const { email } = req.body;
     const db = req.app.locals.db;
     const resetCode = Math.floor(100000 + Math.random() * 900000);
-    // Update the user's document with the reset code.
     const result = await db.collection('users').findOneAndUpdate(
       { email },
       { $set: { resetCode } },
@@ -93,9 +95,7 @@ app.post('/api/users/verify-reset-code', async (req, res) => {
   try {
     const { email, resetCode } = req.body;
     const db = req.app.locals.db;
-    const user = await db
-      .collection('users')
-      .findOne({ email, resetCode: parseInt(resetCode, 10) });
+    const user = await db.collection('users').findOne({ email, resetCode: parseInt(resetCode, 10) });
     if (!user) {
       return res.status(400).json({ error: 'Invalid reset code' });
     }

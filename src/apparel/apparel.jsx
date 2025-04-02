@@ -1,49 +1,65 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios"; // To make HTTP requests
+import axios from "axios";
 
 export function Apparel() {
-  const [items, setItems] = useState([]); // State to hold product data
-  const navigate = useNavigate();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch all products from the backend
-    axios.get("http://localhost:5000/api/products") // Fetch combined endpoint
+    console.log("Fetching products from backend via relative URL...");
+    axios
+      .get("/api/products")
       .then((response) => {
-        const apparelProducts = response.data.filter(
+        console.log("Fetched products:", response.data);
+        // Filter items where category is "Apparel"
+        const apparelItems = response.data.filter(
           (item) => item.category === "Apparel"
         );
-        setItems(apparelProducts); // Filter for apparel products
+        setItems(apparelItems);
+        setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
+      .catch((err) => {
+        if (err.response) {
+          console.error("Error fetching apparel items (response):", err.response.data);
+        } else if (err.request) {
+          console.error("Error fetching apparel items (no response):", err.request);
+        } else {
+          console.error("Error fetching apparel items:", err.message);
+        }
+        setError("Failed to load apparel items. Please try again later.");
+        setLoading(false);
       });
-  }, []); // Run once on component mount
+  }, []);
 
-  function ApparelItem({ sellerId, image, title, description, price }) {
-    function handleMessageSeller() {
-      navigate(`/chat/${sellerId}/${encodeURIComponent(title)}`);
-    }
+  if (loading) {
+    return <div>Loading apparel items...</div>;
+  }
 
-    return (
-      <div className="apparel-item">
-        <img src={image} width="200" height="150" alt={title} />
-        <h3 className="font1">{title}</h3>
-        <p className="font1">{description}</p>
-        <p className="font1 orange-text">Price: ${price}</p>
-        <button className="font1" onClick={handleMessageSeller}>
-          Message Seller
-        </button>
-      </div>
-    );
+  if (error) {
+    return <div>{error}</div>;
   }
 
   return (
-    <div className="container">
-      <h2 className="font3">Apparel Category</h2>
-      {items.map((item) => (
-        <ApparelItem key={item.id} {...item} />
-      ))}
+    <div className="apparel-container">
+      <h2 className="font3">Apparel Listings</h2>
+      {items.length === 0 ? (
+        <p>No apparel items found.</p>
+      ) : (
+        <ul className="apparel-list">
+          {items.map((item) => (
+            <li key={item._id} className="apparel-item">
+              <h3>{item.name}</h3>
+              {/* Display image */}
+              <img src={item.image} alt={item.name} />
+              <p>{item.description}</p>
+              <p>Price: ${item.price}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
+
+export default Apparel;

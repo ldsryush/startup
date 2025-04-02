@@ -7,13 +7,11 @@ export function Equipment() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Using a relative URL so that the proxy handles forwarding
     console.log("Fetching products from backend via relative URL...");
     axios
       .get("/api/products")
       .then((response) => {
         console.log("Fetched products:", response.data);
-        // Filter items where category is "Equipment"
         const equipmentItems = response.data.filter(
           (item) => item.category === "Equipment"
         );
@@ -51,6 +49,8 @@ export function Equipment() {
           {items.map((item) => (
             <li key={item._id} className="equipment-item">
               <h3>{item.name}</h3>
+              {/* Using relative paths for images to fix mixed content issue */}
+              <img src={item.image} alt={item.name} />
               <p>{item.description}</p>
               <p>Price: ${item.price}</p>
             </li>
