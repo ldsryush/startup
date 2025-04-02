@@ -1,75 +1,49 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-const PasswordReset = () => {
+const SetNewPassword = () => {
   const [email, setEmail] = useState("");
-  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
 
-  const handleSendResetCode = async () => {
+  const handleResetPassword = async () => {
     try {
-      const response = await fetch("/api/users/send-reset-code", {
+      const response = await fetch("/api/users/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, newPassword }),
       });
 
       if (response.ok) {
-        setMessage("Reset code sent to your email!");
+        setMessage("Password reset successful! You can now log in with your new password.");
       } else {
-        setMessage("Email not found. Please try again.");
+        setMessage("Failed to reset password. Please try again.");
       }
     } catch (error) {
-      console.error("Error sending reset code:", error);
-      setMessage("An error occurred. Please try again later.");
-    }
-  };
-
-  const handleVerifyResetCode = async () => {
-    try {
-      const response = await fetch("/api/users/verify-reset-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, resetCode }),
-      });
-
-      if (response.ok) {
-        setMessage("Reset code verified! Redirecting to set a new password...");
-        setTimeout(() => navigate("/set-new-password"), 2000); // Redirect after 2 seconds
-      } else {
-        setMessage("Invalid reset code. Please check and try again.");
-      }
-    } catch (error) {
-      console.error("Error verifying reset code:", error);
+      console.error("Error resetting password:", error);
       setMessage("An error occurred. Please try again later.");
     }
   };
 
   return (
     <div>
-      <h2>Password Reset</h2>
+      <h2>Set New Password</h2>
       <input
         type="email"
         placeholder="Enter your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <button onClick={handleSendResetCode}>Send Reset Code</button>
-
-      <br />
-
       <input
-        type="text"
-        placeholder="Enter reset code"
-        value={resetCode}
-        onChange={(e) => setResetCode(e.target.value)}
+        type="password"
+        placeholder="Enter new password"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
       />
-      <button onClick={handleVerifyResetCode}>Verify Reset Code</button>
+      <button onClick={handleResetPassword}>Reset Password</button>
 
       {message && <p>{message}</p>}
     </div>
   );
 };
 
-export default PasswordReset;
+export default SetNewPassword;

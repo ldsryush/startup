@@ -6,14 +6,15 @@ import { Sell } from "./sell/sell";
 import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
-import PasswordReset from "./auth/password-reset"; 
+import PasswordReset from "./auth/password-reset";
+import SetNewPassword from "./auth/SetNewPassword"; 
 import Products from "./products/products";
-import { Weather } from "./weather"; 
+import { Weather } from "./weather";
 import "./index/index.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); 
-  const [currentUser, setCurrentUser] = useState(null); 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
@@ -59,12 +60,8 @@ function App() {
               <div>
                 <h1>Home</h1>
                 {isAuthenticated && <p>Welcome back, {currentUser?.username || currentUser?.email}!</p>}
-                <img
-                  src="/images/snowboarding.jpg"
-                  alt="Home"
-                  style={{ maxWidth: "100%", height: "auto" }}
-                />
-                <Weather /> {/* Display weather on the homepage */}
+                <img src="/images/snowboarding.jpg" alt="Home" style={{ maxWidth: "100%", height: "auto" }} />
+                <Weather />
               </div>
             }
           />
@@ -73,26 +70,19 @@ function App() {
           <Route
             path="/sell"
             element={
-              isAuthenticated ? (
-                <Sell />
-              ) : (
-                <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
-              )
+              isAuthenticated ? <Sell /> : <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
             }
           />
           <Route path="/products" element={<Products />} />
           <Route
             path="/chat/:sellerId/:itemTitle"
             element={
-              isAuthenticated ? (
-                <Chatbox />
-              ) : (
-                <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
-              )
+              isAuthenticated ? <Chatbox /> : <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
             }
           />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<PasswordReset />} />
+          <Route path="/set-new-password" element={<SetNewPassword />} /> {/* New route added */}
           <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
         </Routes>
       </main>
