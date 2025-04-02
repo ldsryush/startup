@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PasswordReset = () => {
   const [email, setEmail] = useState("");
   const [resetCode, setResetCode] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSendResetCode = async () => {
     try {
@@ -12,6 +14,7 @@ const PasswordReset = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+
       if (response.ok) {
         setMessage("Reset code sent to your email!");
       } else {
@@ -32,8 +35,8 @@ const PasswordReset = () => {
       });
 
       if (response.ok) {
-        setMessage("Reset code verified! You can now reset your password.");
-        // Optionally, redirect the user to a "Set New Password" page
+        setMessage("Reset code verified! Redirecting to set a new password...");
+        setTimeout(() => navigate("/set-new-password"), 2000); // Redirect after 2 seconds
       } else {
         setMessage("Invalid reset code. Please check and try again.");
       }

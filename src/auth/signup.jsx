@@ -14,7 +14,7 @@ const Signup = () => {
       const response = await fetch("/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }), 
+        body: JSON.stringify({ name, email, password }),
       });
 
       if (response.ok) {
@@ -23,9 +23,9 @@ const Signup = () => {
         setName("");
         setEmail("");
         setPassword("");
-      } else if (response.status === 409) {
+      } else if (response.status === 409) { // Email already registered
         setMessage("Email is already registered!");
-      } else if (response.status >= 500) {
+      } else if (response.status >= 500) { // Server error
         setMessage("Server error. Please try again later.");
       } else {
         setMessage("Failed to sign up. Please try again.");

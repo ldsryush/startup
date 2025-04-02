@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate, NavLink } from "react-router-dom"; 
-import "./auth.css"; 
+import { useNavigate, NavLink } from "react-router-dom";
+import "./auth.css";
 
 const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState("");
@@ -15,12 +15,12 @@ const Login = ({ onLoginSuccess }) => {
       const response = await fetch("/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }), // Sending data to the backend
+        body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        onLoginSuccess({ id: data.id, email: data.email, username: data.username }); // Include additional user data
+        onLoginSuccess({ id: data.id, email: data.email, username: data.username });
         setError("");
         navigate("/"); // Redirect to home page
       } else {
