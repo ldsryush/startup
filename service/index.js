@@ -1,3 +1,4 @@
+// index.js
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -6,13 +7,16 @@ const connectToDatabase = require("../testMongo/connectToDatabase");
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Define the static file path
 const staticPath = path.resolve("/workspaces/startup/public");
 console.log("Serving static files from:", staticPath);
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use("/public", express.static(staticPath));
 
+// Base endpoint
 app.get("/", (req, res) => {
   res.send("Server is up and running!");
 });
@@ -22,12 +26,12 @@ app.post("/api/users/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const db = req.app.locals.db;
+    // For simplicity, this finds the user by email and plain password.
+    // In production, ensure passwords are hashed and compared securely.
     const user = await db.collection("users").findOne({ email, password });
-
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
-
     res.json({ id: user._id, email: user.email, username: user.username });
   } catch (error) {
     console.error("Error during login:", error);
@@ -41,11 +45,9 @@ app.post("/api/users/register", async (req, res) => {
     const { name, email, password } = req.body;
     const db = req.app.locals.db;
     const userExists = await db.collection("users").findOne({ email });
-
     if (userExists) {
       return res.status(409).json({ error: "Email is already registered" });
     }
-
     const newUser = { username: name, email, password, resetCode: null };
     await db.collection("users").insertOne(newUser);
     res.status(201).json({ message: "User registered successfully", email });
@@ -56,22 +58,21 @@ app.post("/api/users/register", async (req, res) => {
 });
 
 // Password reset endpoints
+
+// 1. Sending a reset code
 app.post("/api/users/send-reset-code", async (req, res) => {
   try {
     const { email } = req.body;
     const db = req.app.locals.db;
     const resetCode = Math.floor(100000 + Math.random() * 900000);
-
     const result = await db.collection("users").findOneAndUpdate(
       { email },
       { $set: { resetCode } },
       { returnDocument: "after" }
     );
-
     if (!result.value) {
       return res.status(404).json({ error: "Email not found" });
     }
-
     console.log(`Reset code for ${email}: ${resetCode}`);
     res.json({ message: "Reset code sent to your email" });
   } catch (error) {
@@ -80,16 +81,18 @@ app.post("/api/users/send-reset-code", async (req, res) => {
   }
 });
 
+// 2. Verifying the reset code
 app.post("/api/users/verify-reset-code", async (req, res) => {
   try {
     const { email, resetCode } = req.body;
     const db = req.app.locals.db;
-    const user = await db.collection("users").findOne({ email, resetCode: parseInt(resetCode, 10) });
-
+    const user = await db.collection("users").findOne({ 
+      email, 
+      resetCode: parseInt(resetCode, 10) 
+    });
     if (!user) {
       return res.status(400).json({ error: "Invalid reset code" });
     }
-
     res.json({ message: "Reset code verified" });
   } catch (error) {
     console.error("Error verifying reset code:", error);
@@ -97,21 +100,18 @@ app.post("/api/users/verify-reset-code", async (req, res) => {
   }
 });
 
-// Reset the password
+// 3. Resetting the password
 app.post("/api/users/reset-password", async (req, res) => {
   try {
     const { email, newPassword } = req.body;
     const db = req.app.locals.db;
-
     const result = await db.collection("users").updateOne(
       { email },
       { $set: { password: newPassword, resetCode: null } }
     );
-
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: "User not found" });
     }
-
     res.json({ message: "Password reset successful" });
   } catch (error) {
     console.error("Error resetting password:", error);
@@ -119,6 +119,19 @@ app.post("/api/users/reset-password", async (req, res) => {
   }
 });
 
+// Products endpoint for apparel.jsx and equipment.jsx
+app.get("/api/products", async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const products = await db.collection("products").find({}).toArray();
+    res.json(products);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
+
+// Connect to the database and start the server
 connectToDatabase()
   .then((client) => {
     const db = client.db("mydatabase");
