@@ -4,7 +4,7 @@ import axios from "axios";
 export function Equipment() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = "";
 
   useEffect(() => {
     console.log("Fetching products from backend via relative URL...");
@@ -19,13 +19,7 @@ export function Equipment() {
         setLoading(false);
       })
       .catch((err) => {
-        if (err.response) {
-          console.error("Error fetching equipment items (response):", err.response.data);
-        } else if (err.request) {
-          console.error("Error fetching equipment items (no response):", err.request);
-        } else {
-          console.error("Error fetching equipment items:", err.message);
-        }
+        console.error("Error fetching equipment items:", err.message);
         setError("Failed to load equipment items. Please try again later.");
         setLoading(false);
       });
@@ -46,15 +40,22 @@ export function Equipment() {
         <p>No equipment items found.</p>
       ) : (
         <ul className="equipment-list">
-          {items.map((item) => (
-            <li key={item._id} className="equipment-item">
-              <h3>{item.name}</h3>
-              {/* Using relative paths for images to fix mixed content issue */}
-              <img src={item.image} alt={item.name} />
-              <p>{item.description}</p>
-              <p>Price: ${item.price}</p>
-            </li>
-          ))}
+          {items.map((item) => {
+            console.log("Equipment item image path:", item.imagePath);
+            return (
+              <li key={item._id} className="equipment-item">
+                <h3>{item.name}</h3>
+                <p>Listed by: {item.sellerName}</p>
+                <img
+                  src={`https://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev/${item.imagePath}`}
+                  alt={item.name}
+                  className="equipment-image"
+                />
+                <p>{item.description}</p>
+                <p>Price: ${item.price}</p>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

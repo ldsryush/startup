@@ -1,76 +1,144 @@
+/* Global Styling */
 body {
   font-family: Arial, sans-serif;
-  background-color: lightblue; 
-  text-align: center; 
+  background-color: #e0f7fa; /* Softer and more modern light blue */
+  color: #333; /* Dark text for better readability */
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
+/* Container for Layout */
 .container {
   max-width: 800px;
   margin: auto;
   padding: 20px;
+  background-color: #ffffff; /* White background for contrast */
+  border-radius: 10px; /* Rounded corners for a modern look */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
+/* Headings */
 h1.font3 {
   font-size: 36px;
+  margin-bottom: 15px;
+  color: #00796b; /* A subtle teal for freshness */
 }
 
 h1.font4 {
   font-size: 24px;
+  margin-bottom: 10px;
+  color: #004d40; /* Slightly darker teal for contrast */
 }
 
+/* Search Form */
 .search-form {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px; /* Adds spacing between input and button */
   margin-bottom: 20px;
 }
 
 .search-input {
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
-  margin-right: 10px;
-  width: 200px;
+  width: 250px;
+  border: 1px solid #ccc; /* Adds a subtle border */
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
 .search-button {
-  padding: 10px 20px;
+  padding: 12px 25px;
   font-size: 16px;
   cursor: pointer;
   background-color: #4CAF50;
   color: white;
   border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
 .search-button:hover {
   background-color: #45a049;
 }
 
+/* Alignments */
 .right-align {
-  text-align: center; /* Changed from right to center */
+  text-align: center; /* Retained centered text for a balanced layout */
 }
 
+/* Font Sizes */
 .font2 {
   font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .font1 {
   font-size: 16px;
   margin: 10px 0;
+  color: #555; /* Slightly muted for secondary text */
 }
 
-#websocket-data, #database-content, #service-result {
+/* Sections and Spacing */
+#websocket-data,
+#database-content,
+#service-result {
   margin: 20px 0;
+  padding: 15px;
+  background-color: #f7f7f7; /* Light gray for subtle section distinction */
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Footer */
 footer {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 30px;
+  padding: 10px;
+  font-size: 14px;
+  background-color: #004d40; /* Dark teal for footer contrast */
+  color: white;
+  border-top: 1px solid #ccc;
 }
 
 footer a {
-  color: blue;
+  color: #b2dfdb; /* Light teal for links */
   text-decoration: none;
 }
 
 footer a:hover {
   text-decoration: underline;
+  color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .container {
+    padding: 15px;
+  }
+
+  h1.font3 {
+    font-size: 28px;
+  }
+
+  h1.font4 {
+    font-size: 20px;
+  }
+
+  .search-input {
+    width: 100%; /* Full-width for smaller screens */
+  }
+
+  .search-button {
+    width: 100%; /* Full-width button on mobile */
+    padding: 10px;
+  }
 }
