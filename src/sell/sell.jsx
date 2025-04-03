@@ -2,17 +2,29 @@ import React from 'react';
 import axios from 'axios';
 
 export function Sell(props) {
+  // If you require logged-in users, you can enforce a check:
+  if (!props.user) {
+    return <div>Please log in to list your item.</div>;
+  }
+
   const [itemName, setItemName] = React.useState('');
   const [itemDescription, setItemDescription] = React.useState('');
   const [itemPrice, setItemPrice] = React.useState('');
-  const [itemCategory, setItemCategory] = React.useState('Apparel'); // Dropdown for category
+  const [itemCategory, setItemCategory] = React.useState('Apparel');
   const [itemImage, setItemImage] = React.useState(null);
   const [successMessage, setSuccessMessage] = React.useState('');
   const [errorMessage, setErrorMessage] = React.useState('');
 
+  // Dynamically determine the API endpoint based on environment:
+  const BASE_URL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:4000'
+      : 'https://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev';
+
   async function handleSubmit(event) {
     event.preventDefault();
 
+    // Build the form data using FormData for multipart uploads
     const formData = new FormData();
     formData.append('name', itemName);
     formData.append('description', itemDescription);
@@ -20,14 +32,25 @@ export function Sell(props) {
     formData.append('category', itemCategory);
     formData.append('image', itemImage);
 
+    // Optionally add the logged-in user's id to associate the item with its owner
+    if (props.user.id) {
+      formData.append('userId', props.user.id);
+    }
+
     try {
-      const response = await axios.post('http://localhost:5000/api/products', formData, {
+      await axios.post(`${BASE_URL}/api/products`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setSuccessMessage('Item listed successfully!');
       setErrorMessage('');
+      // Optionally reset form fields after a successful submission:
+      setItemName('');
+      setItemDescription('');
+      setItemPrice('');
+      setItemCategory('Apparel');
+      setItemImage(null);
     } catch (error) {
-      console.error('Error listing item:', error);
+      console.error('Error listing item:', error.response || error.message);
       setErrorMessage('Failed to list the item. Please try again.');
       setSuccessMessage('');
     }

@@ -61,6 +61,5 @@ export function Apparel() {
     </div>
   );
 }
-//:)
 
 export default Apparel;
