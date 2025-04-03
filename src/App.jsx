@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { Apparel } from "./apparel/apparel";
 import { Equipment } from "./equipment/equipment";
-import { Sell } from "./sell/sell";
+import  Sell  from "./sell/sell";
 import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
