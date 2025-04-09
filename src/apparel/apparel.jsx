@@ -3,8 +3,8 @@ import axios from "axios";
 
 export function Apparel() {
   const [items, setItems] = useState([]);
-  const [loading, setLoading] = true;
-  const [error, setError] = "";
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     console.log("Fetching products from backend via relative URL...");
@@ -12,6 +12,7 @@ export function Apparel() {
       .get("/api/products")
       .then((response) => {
         console.log("Fetched products:", response.data);
+        // Filter items where category is "Apparel"
         const apparelItems = response.data.filter(
           (item) => item.category === "Apparel"
         );
@@ -19,7 +20,13 @@ export function Apparel() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching apparel items:", err.message);
+        if (err.response) {
+          console.error("Error fetching apparel items (response):", err.response.data);
+        } else if (err.request) {
+          console.error("Error fetching apparel items (no response):", err.request);
+        } else {
+          console.error("Error fetching apparel items:", err.message);
+        }
         setError("Failed to load apparel items. Please try again later.");
         setLoading(false);
       });
@@ -40,22 +47,15 @@ export function Apparel() {
         <p>No apparel items found.</p>
       ) : (
         <ul className="apparel-list">
-          {items.map((item) => {
-            console.log("Apparel item image path:", item.imagePath);
-            return (
-              <li key={item._id} className="apparel-item">
-                <h3>{item.name}</h3>
-                <p>Listed by: {item.sellerName}</p>
-                <img
-                  src={`https://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev/${item.imagePath}`}
-                  alt={item.name}
-                  className="apparel-image"
-                />
-                <p>{item.description}</p>
-                <p>Price: ${item.price}</p>
-              </li>
-            );
-          })}
+          {items.map((item) => (
+            <li key={item._id} className="apparel-item">
+              <h3>{item.name}</h3>
+              {/* Display image */}
+              <img src={item.image} alt={item.name} />
+              <p>{item.description}</p>
+              <p>Price: ${item.price}</p>
+            </li>
+          ))}
         </ul>
       )}
     </div>

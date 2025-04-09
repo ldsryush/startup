@@ -17,12 +17,6 @@ const Sell = ({ userId }) => { // Receive the actual logged-in userId as a prop
   const handleSell = async (e) => {
     e.preventDefault();
 
-    if (!userId) {
-      setMessage("Error: User ID is missing. Please log in.");
-      console.error("Error: userId is undefined!");
-      return;
-    }
-
     try {
       const formData = new FormData();
       formData.append("name", itemName);

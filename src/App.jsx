@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { Apparel } from "./apparel/apparel";
 import { Equipment } from "./equipment/equipment";
-import  Sell  from "./sell/sell";
+import Sell from "./sell/sell";
 import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
 import PasswordReset from "./auth/password-reset";
-import SetNewPassword from "./auth/SetNewPassword"; 
+import SetNewPassword from "./auth/SetNewPassword";
 import Products from "./products/products";
 import { Weather } from "./weather";
 import "./index/index.css";
@@ -29,21 +29,57 @@ function App() {
   return (
     <div className="app">
       {/* Navigation Bar */}
-      <nav style={{ display: "flex", justifyContent: "space-around", padding: "10px" }}>
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/apparel">Apparel</NavLink>
-        <NavLink to="/equipment">Equipment</NavLink>
-        <NavLink to="/sell">Sell</NavLink>
-        <NavLink to="/products">Products</NavLink>
+      <nav
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          padding: "10px",
+        }}
+      >
+        <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>
+          Home
+        </NavLink>
+        <NavLink
+          to="/apparel"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Apparel
+        </NavLink>
+        <NavLink
+          to="/equipment"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Equipment
+        </NavLink>
+        <NavLink
+          to="/sell"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Sell
+        </NavLink>
+        <NavLink
+          to="/products"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Products
+        </NavLink>
 
-        {!isAuthenticated && (
+        {!isAuthenticated ? (
           <>
-            <NavLink to="/signup">Sign Up</NavLink>
-            <NavLink to="/login">Login</NavLink>
+            <NavLink
+              to="/signup"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Sign Up
+            </NavLink>
+            <NavLink
+              to="/login"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Login
+            </NavLink>
           </>
-        )}
-
-        {isAuthenticated && (
+        ) : (
           <>
             <span>Welcome, {currentUser?.username || "User"}!</span>
             <button onClick={handleLogout}>Logout</button>
@@ -59,8 +95,17 @@ function App() {
             element={
               <div>
                 <h1>Home</h1>
-                {isAuthenticated && <p>Welcome back, {currentUser?.username || currentUser?.email}!</p>}
-                <img src="/images/snowboarding.jpg" alt="Home" style={{ maxWidth: "100%", height: "auto" }} />
+                {isAuthenticated && (
+                  <p>
+                    Welcome back,{" "}
+                    {currentUser?.username || currentUser?.email}!
+                  </p>
+                )}
+                <img
+                  src="/uploads/snowboarding.jpg"
+                  alt="Home"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
                 <Weather />
               </div>
             }
@@ -70,20 +115,37 @@ function App() {
           <Route
             path="/sell"
             element={
-              isAuthenticated ? <Sell /> : <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
+              isAuthenticated ? (
+                <Sell />
+              ) : (
+                <p>
+                  Please <NavLink to="/login">log in</NavLink> to access this
+                  page.
+                </p>
+              )
             }
           />
           <Route path="/products" element={<Products />} />
           <Route
             path="/chat/:sellerId/:itemTitle"
             element={
-              isAuthenticated ? <Chatbox /> : <p>Please <NavLink to="/login">log in</NavLink> to access this page.</p>
+              isAuthenticated ? (
+                <Chatbox />
+              ) : (
+                <p>
+                  Please <NavLink to="/login">log in</NavLink> to access this
+                  page.
+                </p>
+              )
             }
           />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<PasswordReset />} />
-          <Route path="/set-new-password" element={<SetNewPassword />} /> {/* New route added */}
-          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="/set-new-password" element={<SetNewPassword />} />
+          <Route
+            path="/login"
+            element={<Login onLoginSuccess={handleLoginSuccess} />}
+          />
         </Routes>
       </main>
     </div>

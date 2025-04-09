@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+// Set the backend URL to an empty string to use relative URLs.
+// With your Vite proxy in place, requests to /uploads/… will be forwarded to your backend.
+const backendURL = ""; // Alternatively, you could set a hardcoded URL if needed.
+
 export function Equipment() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = "";
+  const [error, setError] = useState("");
 
   useEffect(() => {
     console.log("Fetching products from backend via relative URL...");
@@ -12,6 +16,7 @@ export function Equipment() {
       .get("/api/products")
       .then((response) => {
         console.log("Fetched products:", response.data);
+        // Filter to include only products categorized as "Equipment"
         const equipmentItems = response.data.filter(
           (item) => item.category === "Equipment"
         );
@@ -19,7 +24,16 @@ export function Equipment() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching equipment items:", err.message);
+        if (err.response) {
+          console.error(
+            "Error fetching equipment items (response):",
+            err.response.data
+          );
+        } else if (err.request) {
+          console.error("Error fetching equipment items (no response):", err.request);
+        } else {
+          console.error("Error fetching equipment items:", err.message);
+        }
         setError("Failed to load equipment items. Please try again later.");
         setLoading(false);
       });
@@ -41,13 +55,15 @@ export function Equipment() {
       ) : (
         <ul className="equipment-list">
           {items.map((item) => {
-            console.log("Equipment item image path:", item.imagePath);
+            console.log("Using image path:", item.imagePath);
             return (
               <li key={item._id} className="equipment-item">
                 <h3>{item.name}</h3>
-                <p>Listed by: {item.sellerName}</p>
+                {/* Build the image URL.
+                    If backendURL is empty, this produces a relative URL like
+                    "/uploads/1744163807598-380050471.jpg". */}
                 <img
-                  src={`https://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev/${item.imagePath}`}
+                  src={`${backendURL}/${item.imagePath}`}
                   alt={item.name}
                   className="equipment-image"
                 />
