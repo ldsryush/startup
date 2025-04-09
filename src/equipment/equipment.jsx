@@ -69,6 +69,9 @@ export function Equipment() {
                 />
                 <p>{item.description}</p>
                 <p>Price: ${item.price}</p>
+                <p>
+                  <strong>Listed by:</strong> {item.email || "Unknown"} {/* Show the user's email */}
+                </p>
               </li>
             );
           })}
