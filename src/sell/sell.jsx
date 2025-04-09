@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./sell.css";
 
-const Sell = ({ userId }) => { // Receive the actual logged-in userId as a prop
+const Sell = ({ email }) => { // Receive the user's email as a prop
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
   const [itemPrice, setItemPrice] = useState("");
@@ -11,8 +11,8 @@ const Sell = ({ userId }) => { // Receive the actual logged-in userId as a prop
   const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
-    console.log("Current userId:", userId); // Debug userId to verify it's being received
-  }, [userId]);
+    console.log("User email:", email); // Debug to verify email is passed correctly
+  }, [email]);
 
   const handleSell = async (e) => {
     e.preventDefault();
@@ -24,7 +24,7 @@ const Sell = ({ userId }) => { // Receive the actual logged-in userId as a prop
       formData.append("price", itemPrice);
       formData.append("category", itemCategory);
       formData.append("image", itemImage);
-      formData.append("userId", userId); // Ensure correct user ID is sent
+      formData.append("email", email); // Send the user's email
 
       const response = await fetch("/api/products", {
         method: "POST",

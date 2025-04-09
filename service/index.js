@@ -3,23 +3,16 @@ const cors = require("cors");
 const path = require("path");
 const axios = require("axios");
 const multer = require("multer");
-const connectToDatabase = require("../testMongo/connectToDatabase");
+const connectToDatabase = require("./connectToDatabase");
 
 const app = express();
 const port = process.env.PORT || 4000;
 
-/*
-  Define two important paths:
-  - uploadsPath: Points to the "uploads" folder inside your service directory,
-    where uploaded images are stored.
-  - projectRoot: Points one directory up (the root of your project, i.e. /workspaces/startup),
-    where your index.html resides.
-*/
 const uploadsPath = path.join(__dirname, "uploads");
-const projectRoot = path.join(__dirname, "..");
+const publicPath = path.join(__dirname, "public");
 
 console.log("Uploads will be served from:", uploadsPath);
-console.log("Front-end assets (index.html, etc.) will be served from:", projectRoot);
+console.log("Front-end assets will be served from:", publicPath);
 
 app.use(
   cors({
@@ -37,7 +30,7 @@ app.use(express.json());
 // ---------------------
 // Multer Configuration
 // ---------------------
-// Files will be stored in the "uploads" folder, inside the service directory.
+// Files will be stored in the "uploads" folder.
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsPath);
@@ -82,13 +75,13 @@ app.get("/api/weather", async (req, res) => {
 // Products endpoint: Handles file uploads and saves products to MongoDB.
 app.post("/api/products", upload.single("image"), async (req, res) => {
   try {
-    const { name, description, price, category, userId } = req.body;
+    const { name, description, price, category, email } = req.body; // Extract the user's email
     const file = req.file;
     if (!file) {
       return res.status(400).json({ error: "Image upload is required." });
     }
     console.log("File uploaded:", file);
-    console.log("Product details:", { name, description, price, category, userId });
+    console.log("Product details:", { name, description, price, category, email });
 
     // Save the product with imagePath as "uploads/<filename>"
     const newProduct = {
@@ -96,14 +89,11 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
       description,
       price: parseFloat(price),
       category,
-      imagePath: `uploads/${file.filename}`, // Image is referenced via /uploads/filename
+      imagePath: `uploads/${file.filename}`,
       imageName: file.originalname,
       createdAt: new Date(),
+      email, // Store the user's email
     };
-
-    if (userId) {
-      newProduct.userId = userId;
-    }
 
     const db = req.app.locals.db;
     await db.collection("products").insertOne(newProduct);
@@ -172,16 +162,15 @@ app.post("/api/users/register", async (req, res) => {
 // Serve static content
 // ---------------------
 
-// 1. Serve uploaded images from the uploads folder (inside service)
+// 1. Serve uploaded images from the uploads folder.
 app.use("/uploads", express.static(uploadsPath));
 
-// 2. Serve front-end static files (index.html, JavaScript, CSS, etc.) from the project root.
-// This ensures that your index.html (in /workspaces/startup) is served, along with any other assets.
-app.use(express.static(projectRoot));
+// 2. Serve front-end static files from the public folder.
+app.use(express.static(publicPath));
 
-// Catch-all route: For any unmatched route, serve index.html from the project root (for SPA routing)
+// Catch-all route: For any unmatched route, serve index.html from the public folder (for SPA routing)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(projectRoot, "index.html"));
+  res.sendFile(path.join(publicPath, "index.html"));
 });
 
 // ---------------------
@@ -191,10 +180,11 @@ connectToDatabase()
   .then((client) => {
     const db = client.db("mydatabase"); // Replace with your actual database name
     app.locals.db = db;
-    app.listen(port, () => {
+    // Listen on all network interfaces
+    app.listen(port, "0.0.0.0", () => {
       console.log(`Server is running on http://localhost:${port}`);
       console.log("Uploads are served from:", uploadsPath);
-      console.log("Front-end assets are served from:", projectRoot);
+      console.log("Front-end assets are served from:", publicPath);
     });
   })
   .catch((error) => {

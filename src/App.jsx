@@ -18,7 +18,7 @@ function App() {
 
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
-    setCurrentUser(user);
+    setCurrentUser(user); // Store user data including userId, username, etc.
   };
 
   const handleLogout = () => {
@@ -116,7 +116,7 @@ function App() {
             path="/sell"
             element={
               isAuthenticated ? (
-                <Sell />
+                <Sell email={currentUser?.email} /> // Pass userId to Sell component
               ) : (
                 <p>
                   Please <NavLink to="/login">log in</NavLink> to access this
