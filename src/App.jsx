@@ -3,12 +3,11 @@ import { NavLink, Route, Routes } from "react-router-dom";
 import { Apparel } from "./apparel/apparel";
 import { Equipment } from "./equipment/equipment";
 import Sell from "./sell/sell";
-import Chatbox from "./chatbox/chatbox";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
 import PasswordReset from "./auth/password-reset";
 import SetNewPassword from "./auth/SetNewPassword";
-import Products from "./products/products";
+import Messages from "./messages/messages"; // Renamed from Products
 import { Weather } from "./weather";
 import "./index/index.css";
 
@@ -58,10 +57,10 @@ function App() {
           Sell
         </NavLink>
         <NavLink
-          to="/products"
+          to="/messages" // Updated to use Messages component
           className={({ isActive }) => (isActive ? "active" : "")}
         >
-          Products
+          Messages
         </NavLink>
 
         {!isAuthenticated ? (
@@ -116,7 +115,7 @@ function App() {
             path="/sell"
             element={
               isAuthenticated ? (
-                <Sell email={currentUser?.email} /> // Pass userId to Sell component
+                <Sell email={currentUser?.email} /> // Pass user's email to Sell component
               ) : (
                 <p>
                   Please <NavLink to="/login">log in</NavLink> to access this
@@ -125,20 +124,7 @@ function App() {
               )
             }
           />
-          <Route path="/products" element={<Products />} />
-          <Route
-            path="/chat/:sellerId/:itemTitle"
-            element={
-              isAuthenticated ? (
-                <Chatbox />
-              ) : (
-                <p>
-                  Please <NavLink to="/login">log in</NavLink> to access this
-                  page.
-                </p>
-              )
-            }
-          />
+          <Route path="/messages" element={<Messages />} /> {/* Updated route */}
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<PasswordReset />} />
           <Route path="/set-new-password" element={<SetNewPassword />} />

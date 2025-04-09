@@ -1,51 +1,68 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-// Set the backend URL to an empty string to use relative URLs.
-// With your Vite proxy in place, requests to /uploads/… will be forwarded to your backend.
-const backendURL = ""; // Alternatively, you could set a hardcoded URL if needed.
 
 export function Equipment() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedItem, setSelectedItem] = useState(null); // Track selected equipment for messaging
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    console.log("Fetching products from backend via relative URL...");
-    axios
-      .get("/api/products")
-      .then((response) => {
-        console.log("Fetched products:", response.data);
-        // Filter to include only products categorized as "Equipment"
-        const equipmentItems = response.data.filter(
-          (item) => item.category === "Equipment"
-        );
-        setItems(equipmentItems);
+    // Fetch product items and initialize WebSocket connection
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("/api/products");
+        const data = await response.json();
+        setItems(data.filter((item) => item.category === "Equipment"));
         setLoading(false);
-      })
-      .catch((err) => {
-        if (err.response) {
-          console.error(
-            "Error fetching equipment items (response):",
-            err.response.data
-          );
-        } else if (err.request) {
-          console.error("Error fetching equipment items (no response):", err.request);
-        } else {
-          console.error("Error fetching equipment items:", err.message);
-        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
         setError("Failed to load equipment items. Please try again later.");
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProducts();
+
+    // Determine WebSocket URL dynamically
+    const wsUrl =
+      process.env.NODE_ENV === "production"
+        ? "wss://startup.oyeemarket.click" // Production WebSocket URL
+        : "wss://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev"; // Development WebSocket URL
+
+    console.log("Connecting to WebSocket:", wsUrl);
+
+    const ws = new WebSocket(wsUrl);
+    ws.onopen = () => console.log("WebSocket connection established");
+    ws.onclose = () => console.error("WebSocket connection closed");
+    ws.onerror = (error) => console.error("WebSocket error:", error);
+
+    setSocket(ws);
+
+    // Cleanup WebSocket connection on component unmount
+    return () => ws.close();
   }, []);
 
-  if (loading) {
-    return <div>Loading equipment items...</div>;
-  }
+  const handleMessageSend = () => {
+    if (socket && selectedItem) {
+      const chatMessage = {
+        itemId: selectedItem._id,
+        sender: "Buyer", // Replace with the buyer's email or username
+        recipient: selectedItem.email, // Seller's email
+        message,
+        timestamp: new Date().toISOString(),
+      };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+      socket.send(JSON.stringify(chatMessage)); // Send message via WebSocket
+      setMessages((prev) => [...prev, chatMessage]); // Display the message locally
+      setMessage(""); // Clear the input field
+    }
+  };
+
+  if (loading) return <div>Loading equipment items...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="equipment-container">
@@ -54,28 +71,40 @@ export function Equipment() {
         <p>No equipment items found.</p>
       ) : (
         <ul className="equipment-list">
-          {items.map((item) => {
-            console.log("Using image path:", item.imagePath);
-            return (
-              <li key={item._id} className="equipment-item">
-                <h3>{item.name}</h3>
-                {/* Build the image URL.
-                    If backendURL is empty, this produces a relative URL like
-                    "/uploads/1744163807598-380050471.jpg". */}
-                <img
-                  src={`${backendURL}/${item.imagePath}`}
-                  alt={item.name}
-                  className="equipment-image"
-                />
-                <p>{item.description}</p>
-                <p>Price: ${item.price}</p>
-                <p>
-                  <strong>Listed by:</strong> {item.email || "Unknown"} {/* Show the user's email */}
-                </p>
-              </li>
-            );
-          })}
+          {items.map((item) => (
+            <li key={item._id} className="equipment-item">
+              <h3>{item.name}</h3>
+              <img src={item.imagePath} alt={item.name} className="equipment-image" />
+              <p>{item.description}</p>
+              <p>Price: ${item.price}</p>
+              <p><strong>Seller:</strong> {item.email}</p>
+              <button onClick={() => setSelectedItem(item)}>Message Seller</button>
+            </li>
+          ))}
         </ul>
+      )}
+
+      {selectedItem && (
+        <div className="chat-container">
+          <h3>Chat with the seller about {selectedItem.name}</h3>
+          <ul className="chat-messages">
+            {messages
+              .filter((msg) => msg.itemId === selectedItem._id) // Filter messages for the selected item
+              .map((msg, index) => (
+                <li key={index}>
+                  <strong>{msg.sender}: </strong>
+                  {msg.message}
+                </li>
+              ))}
+          </ul>
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Write a message..."
+          />
+          <button onClick={handleMessageSend}>Send Message</button>
+        </div>
       )}
     </div>
   );

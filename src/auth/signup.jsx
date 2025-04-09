@@ -6,12 +6,20 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Dynamically determine the API base URL
+  const API_BASE_URL =
+    process.env.NODE_ENV === "production"
+      ? "https://startup.oyeemarket.click" // Replace with your production domain
+      : "https://organic-robot-r4pwp45v54p63xrx-5173.app.github.dev"; // Current development URL
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await fetch("/api/users/register", {
+      const response = await fetch(`${API_BASE_URL}/api/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -23,16 +31,19 @@ const Signup = () => {
         setName("");
         setEmail("");
         setPassword("");
-      } else if (response.status === 409) { // Email already registered
+      } else if (response.status === 409) {
         setMessage("Email is already registered!");
-      } else if (response.status >= 500) { // Server error
+      } else if (response.status >= 500) {
         setMessage("Server error. Please try again later.");
       } else {
-        setMessage("Failed to sign up. Please try again.");
+        const errorData = await response.json();
+        setMessage(errorData.message || "Failed to sign up. Please try again.");
       }
     } catch (error) {
       console.error("Error during signup:", error);
       setMessage("Error connecting to the server.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,8 +71,14 @@ const Signup = () => {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
-      <button type="submit">Sign Up</button>
-      {message && <p className="error-message">{message}</p>}
+      <button type="submit" disabled={loading}>
+        {loading ? "Signing Up..." : "Sign Up"}
+      </button>
+      {message && (
+        <p className={message.includes("successful") ? "success-message" : "error-message"}>
+          {message}
+        </p>
+      )}
     </form>
   );
 };
