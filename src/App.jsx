@@ -7,7 +7,7 @@ import Signup from "./auth/signup";
 import Login from "./auth/login";
 import PasswordReset from "./auth/password-reset";
 import SetNewPassword from "./auth/SetNewPassword";
-import Messages from "./messages/messages"; // Renamed from Products
+import Messages from "./messages/messages";
 import { Weather } from "./weather";
 import "./index/index.css";
 
@@ -17,7 +17,7 @@ function App() {
 
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
-    setCurrentUser(user); // Store user data including userId, username, email, etc.
+    setCurrentUser(user); 
   };
 
   const handleLogout = () => {
@@ -109,7 +109,13 @@ function App() {
               </div>
             }
           />
-          <Route path="/apparel" element={<Apparel />} />
+          <Route
+            path="/apparel"
+            element={
+              // Pass the logged-in user's email to Apparel component
+              <Apparel email={currentUser?.email} />
+            }
+          />
           <Route
             path="/equipment"
             element={

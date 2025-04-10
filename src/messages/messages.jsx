@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./messages.css";
+
 
 export function Messages({ currentUser }) {
   const [allMessages, setAllMessages] = useState([]);

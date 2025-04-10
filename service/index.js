@@ -6,6 +6,7 @@ const multer = require("multer");
 const http = require("http");
 const WebSocket = require("ws");
 const connectToDatabase = require("./connectToDatabase");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -30,6 +31,39 @@ app.use(
 );
 
 app.use(express.json());
+
+// ---------------------
+// Nodemailer Configuration
+// ---------------------
+async function createMailTransporter() {
+  if (process.env.NODE_ENV === "production") {
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: process.env.SMTP_SECURE === "true", // true for 465, false otherwise
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  } else {
+    // In development, use Ethereal account for testing
+    let testAccount = await nodemailer.createTestAccount();
+    console.log("Ethereal test account created", testAccount);
+    return nodemailer.createTransport({
+      host: testAccount.smtp.host,
+      port: testAccount.smtp.port,
+      secure: testAccount.smtp.secure,
+      auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+      },
+    });
+  }
+}
+
+// In-memory store for reset codes (for demonstration purposes; use a proper datastore in production)
+let resetCodes = {};
 
 // ---------------------
 // Multer Configuration
@@ -61,7 +95,8 @@ app.get("/api/weather", async (req, res) => {
   try {
     const apiUrl = "http://api.weatherapi.com/v1/current.json";
     const city = "Orem, Utah";
-    const apiKey = process.env.WEATHER_API_KEY || "cb4c756da7324f97ad210204250304";
+    const apiKey =
+      process.env.WEATHER_API_KEY || "cb4c756da7324f97ad210204250304";
     if (!apiKey) {
       return res.status(500).json({ error: "Weather API Key is missing!" });
     }
@@ -89,10 +124,62 @@ app.post("/api/users/register", async (req, res) => {
     }
     const newUser = { name, email, password, createdAt: new Date() };
     await db.collection("users").insertOne(newUser);
-    res.status(201).json({ email: newUser.email, message: "User created successfully" });
+    res
+      .status(201)
+      .json({ email: newUser.email, message: "User created successfully" });
   } catch (err) {
     console.error("Error in /api/users/register:", err.message);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// Send Reset Code endpoint
+app.post("/api/users/send-reset-code", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+    // Generate a 6-digit reset code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    resetCodes[email] = resetCode;
+    const transporter = await createMailTransporter();
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || "no-reply@example.com",
+      to: email,
+      subject: "Your Password Reset Code",
+      text: `Your password reset code is: ${resetCode}`,
+      html: `<p>Your password reset code is: <strong>${resetCode}</strong></p>`,
+    };
+    let info = await transporter.sendMail(mailOptions);
+    console.log("Reset code email sent:", info.messageId);
+    if (process.env.NODE_ENV !== "production") {
+      console.log("Preview URL: " + nodemailer.getTestMessageUrl(info));
+    }
+    res.status(200).json({ message: "Reset code sent to your email!" });
+  } catch (error) {
+    console.error("Error sending reset code email:", error);
+    res.status(500).json({ error: "Failed to send reset code email." });
+  }
+});
+
+// Verify Reset Code endpoint
+app.post("/api/users/verify-reset-code", async (req, res) => {
+  try {
+    const { email, resetCode } = req.body;
+    if (!email || !resetCode) {
+      return res.status(400).json({ error: "Email and reset code are required" });
+    }
+    if (resetCodes[email] && resetCodes[email] === resetCode) {
+      // Typically, you would update the user record to mark the reset code as verified.
+      delete resetCodes[email]; // Invalidate the code after verification
+      res.status(200).json({ message: "Reset code verified!" });
+    } else {
+      res.status(400).json({ error: "Invalid reset code. Please try again." });
+    }
+  } catch (error) {
+    console.error("Error verifying reset code:", error);
+    res.status(500).json({ error: "Failed to verify reset code." });
   }
 });
 
@@ -135,9 +222,8 @@ app.get("/api/messages", async (req, res) => {
   try {
     const { user } = req.query;
     const db = req.app.locals.db;
-    // If a user is specified, get all messages where they are either sender or receiver
+    // If a user is specified, get all messages where that user is either the sender or receiver
     const query = user ? { $or: [{ sender: user }, { receiver: user }] } : {};
-    // Optionally, sort by timestamp in ascending order
     const messages = await db
       .collection("messages")
       .find(query)
@@ -151,7 +237,7 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-// Products endpoint
+// Save Product endpoint
 app.post("/api/products", upload.single("image"), async (req, res) => {
   try {
     const { name, description, price, category, email } = req.body;
@@ -183,7 +269,7 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
   }
 });
 
-// GET endpoint to fetch products
+// Get Products endpoint
 app.get("/api/products", async (req, res) => {
   try {
     const db = req.app.locals.db;
@@ -216,8 +302,6 @@ app.post("/api/users/login", async (req, res) => {
 // ---------------------
 // WebSocket Integration
 // ---------------------
-// The WebSocket server is bound to the same HTTP server that powers our API endpoints.
-// This lets clients construct a dynamic WebSocket URL (using host, port, and protocol) on the frontend.
 wss.on("connection", (ws) => {
   console.log("New WebSocket connection");
   
@@ -242,7 +326,6 @@ wss.on("connection", (ws) => {
 // ---------------------
 app.use("/uploads", express.static(uploadsPath));
 
-// Serve index.html directly from the root directory for any unmatched routes
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./equipment.css";
 
 export function Equipment({ email }) { // Now receiving the user's email as a prop
   const [items, setItems] = useState([]);
@@ -50,7 +51,7 @@ export function Equipment({ email }) { // Now receiving the user's email as a pr
     if (socket && selectedItem) {
       const chatMessage = {
         itemId: selectedItem._id,
-        sender: email, // Now using the buyer's email instead of "Buyer"
+        sender: email, // Using the buyer's email
         recipient: selectedItem.email, // Seller's email
         message,
         timestamp: new Date().toISOString(),
@@ -102,33 +103,36 @@ export function Equipment({ email }) { // Now receiving the user's email as a pr
               <p>
                 <strong>Seller:</strong> {item.email}
               </p>
-              <button onClick={() => setSelectedItem(item)}>Message Seller</button>
+              <button onClick={() => setSelectedItem(item)}>
+                Message Seller
+              </button>
+
+              {/* Render chatbox right below this item if it's selected */}
+              {selectedItem && selectedItem._id === item._id && (
+                <div className="chat-container">
+                  <h3>Chat with the seller about {item.name}</h3>
+                  <ul className="chat-messages">
+                    {messages
+                      .filter((msg) => msg.itemId === item._id)
+                      .map((msg, index) => (
+                        <li key={index}>
+                          <strong>{msg.sender}: </strong>
+                          {msg.message}
+                        </li>
+                      ))}
+                  </ul>
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Write a message..."
+                  />
+                  <button onClick={handleMessageSend}>Send Message</button>
+                </div>
+              )}
             </li>
           ))}
         </ul>
-      )}
-
-      {selectedItem && (
-        <div className="chat-container">
-          <h3>Chat with the seller about {selectedItem.name}</h3>
-          <ul className="chat-messages">
-            {messages
-              .filter((msg) => msg.itemId === selectedItem._id) // Filter messages for the selected item
-              .map((msg, index) => (
-                <li key={index}>
-                  <strong>{msg.sender}: </strong>
-                  {msg.message}
-                </li>
-              ))}
-          </ul>
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Write a message..."
-          />
-          <button onClick={handleMessageSend}>Send Message</button>
-        </div>
       )}
     </div>
   );

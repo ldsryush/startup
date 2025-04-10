@@ -160,15 +160,15 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **User registration** - Users are able to register and the registered information is stored in my Mongodb for future use.
 - [x] **User login and logout** - User can now login to list items for sale and logout when they choose to do so.
 - [x] **Stores data in MongoDB** - My Mongodb now stores user email, password, name, and products listed for sale. 
-- [ ] **Stores credentials in MongoDB** - My Mongodb stores user credentials in my users database.
+- [x] **Stores credentials in MongoDB** - My Mongodb stores user credentials in my users database.
 - [x] **Restricts functionality based on authentication** - If users are not authenticated by logging in, they cannot list items for sale. 
 
 ## 🚀 WebSocket deliverable
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Backend listens for WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Frontend makes WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Data sent over WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **WebSocket data displayed** - I did not complete this part of the deliverable.
-- [ ] **Application is fully functional** - I did not complete this part of the deliverable.
+- [x] **Backend listens for WebSocket connection** - Backend listens for Websocket connection and correctly sends messages to be stored to my mongo db.
+- [x] **Frontend makes WebSocket connection** - My messages page correctly shows chatlogs as well as let user chat with eachother about the item of interest.
+- [x] **Data sent over WebSocket connection** - I did not complete this part of the deliverable.
+- [x] **WebSocket data displayed** - Both buyer and seller can both see the chat history and what time they sent the message.
+- [x] **Application is fully functional** - Application if fully functional in letting users sign up, reset password, log in, list items, and talk to potential sellers/buyers.

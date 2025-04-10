@@ -12,6 +12,7 @@ body {
   font-weight: bold;
 }
 
+.equipment-item, 
 .apparel-item {
   border: 1px solid #ddd;
   padding: 10px;
@@ -41,4 +42,14 @@ button.font1 {
 
 button.font1:hover {
   background-color: #45a049;
+}
+
+/* Ensure all images are the same size */
+.equipment-image,
+.apparel-image {
+  width: 200px; /* Set uniform width */
+  height: 200px; /* Set uniform height */
+  object-fit: cover; /* Prevent distortion, crop the image to fit */
+  border: 1px solid #ddd; /* Optional border for a polished look */
+  border-radius: 8px; /* Optional: Rounded corners */
 }
