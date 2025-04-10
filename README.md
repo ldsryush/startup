@@ -57,7 +57,59 @@ React components go through a lifecycle of events, such as mounting, updating, a
 Hooks:
 
 React Hooks are functions that let you use state and other React features in functional components. Some commonly used hooks are useState, useEffect, and useContext.
+SMTP & Email Configuration:
 
+Learned how to set up environment-specific email transporters with Nodemailer:
+
+Development: Use Ethereal for testing emails.
+
+Production: Use AWS SES (or similar SMTP providers) with proper environment variables (e.g., SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS).
+
+Configured your deployment script (or environment) to export these environment variables so that your backend uses them in production.
+
+Error Debugging & Module Resolution:
+
+Troubleshot a MODULE_NOT_FOUND error by verifying your file structure and ensuring that all required modules (e.g., connectToDatabase.js) were in the expected locations.
+
+Adjusted file paths for CSS imports in React, ensuring that components import their styles using relative paths (e.g., import "../equipment/equipment.css";).
+
+React Component Best Practices:
+
+Moved CSS imports from the HTML file to the corresponding React component files (e.g., Equipment.jsx and Apparel.jsx) to support modular and component-scoped styling.
+
+Ensured that state is passed correctly via props. For example, passing the logged-in user’s email from App.jsx to Equipment.jsx and Apparel.jsx, so that messaging functions correctly.
+
+Uniform Image Sizing with CSS:
+
+Learned to enforce a consistent image size using CSS properties:
+
+Set fixed width and height (e.g., 200px).
+
+Used object-fit: cover to crop images appropriately without distortion.
+
+Applied these styles uniformly for images across different components (both equipment and apparel).
+
+WebSocket Integration for Real-Time Chat:
+
+Integrated WebSocket connections to enable real-time messaging within your components.
+
+Established dynamic WebSocket URLs based on your environment (development vs production).
+
+Conditional Rendering & UI Enhancements:
+
+Modified Equipment.jsx and Apparel.jsx to show a chatbox only for the selected item:
+
+When "Message Seller" is clicked, the selected item is stored in state.
+
+The chatbox is conditionally rendered inside the specific item’s <li> element, directly under the "Message Seller" button.
+
+Ensured that messages are filtered and displayed only for the selected item.
+
+Project Structure & Routing:
+
+Configured your main App.jsx to pass required information (e.g., the user's email) as props to child components like Equipment.jsx and Apparel.jsx.
+
+Set up React Router to navigate between different pages (e.g., Home, Apparel, Equipment, Sell, Messages) while maintaining authentication state.
 ## 🚀 Specification Deliverable
 
 > [!NOTE]
