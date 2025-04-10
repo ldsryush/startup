@@ -7,13 +7,16 @@ export function Messages({ currentUser }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch messages from the backend for the current user
     const fetchMessages = async () => {
       try {
-        const response = await axios.get("/api/messages", {
-          params: { user: currentUser?.username }, // Fetch only messages relevant to logged-in user
-        });
-        setMessages(response.data); // Assume response contains an array of messages
+        // Ensure the current user is valid before making the request
+        if (currentUser?.email) {
+          const response = await axios.get("/api/messages", {
+            params: { user: currentUser.email }, // Match backend data using email
+          });
+          console.log("Fetched messages:", response.data); // Debugging log
+          setMessages(response.data);
+        }
       } catch (err) {
         console.error("Error fetching messages:", err);
         setError("Failed to load messages. Please try again later.");
@@ -22,13 +25,8 @@ export function Messages({ currentUser }) {
       }
     };
 
-    if (currentUser?.username) {
-      fetchMessages();
-    } else {
-      setMessages([]);
-      setLoading(false);
-    }
-  }, [currentUser]); // Re-fetch messages when currentUser changes
+    fetchMessages();
+  }, [currentUser]);
 
   if (loading) return <div>Loading messages...</div>;
   if (error) return <div>{error}</div>;
@@ -40,8 +38,8 @@ export function Messages({ currentUser }) {
         <p>No messages found.</p>
       ) : (
         <ul className="messages-list">
-          {messages.map((msg, index) => (
-            <li key={index} className="message-item">
+          {messages.map((msg) => (
+            <li key={msg._id} className="message-item">
               <p>
                 <strong>From:</strong> {msg.sender}
               </p>

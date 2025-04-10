@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { Apparel } from "./apparel/apparel";
-import { Equipment } from "./equipment/equipment";
+import Equipment from "./equipment/equipment";
 import Sell from "./sell/sell";
 import Signup from "./auth/signup";
 import Login from "./auth/login";
@@ -17,7 +17,7 @@ function App() {
 
   const handleLoginSuccess = (user) => {
     setIsAuthenticated(true);
-    setCurrentUser(user); // Store user data including userId, username, etc.
+    setCurrentUser(user); // Store user data including userId, username, email, etc.
   };
 
   const handleLogout = () => {
@@ -110,7 +110,13 @@ function App() {
             }
           />
           <Route path="/apparel" element={<Apparel />} />
-          <Route path="/equipment" element={<Equipment />} />
+          <Route
+            path="/equipment"
+            element={
+              // Pass the logged-in user's email to Equipment component
+              <Equipment email={currentUser?.email} />
+            }
+          />
           <Route
             path="/sell"
             element={
@@ -118,8 +124,7 @@ function App() {
                 <Sell email={currentUser?.email} /> // Pass user's email to Sell component
               ) : (
                 <p>
-                  Please <NavLink to="/login">log in</NavLink> to access this
-                  page.
+                  Please <NavLink to="/login">log in</NavLink> to access this page.
                 </p>
               )
             }

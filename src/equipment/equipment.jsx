@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-export function Equipment() {
+export function Equipment({ email }) { // Now receiving the user's email as a prop
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -45,19 +46,36 @@ export function Equipment() {
     return () => ws.close();
   }, []);
 
-  const handleMessageSend = () => {
+  const handleMessageSend = async () => {
     if (socket && selectedItem) {
       const chatMessage = {
         itemId: selectedItem._id,
-        sender: "Buyer", // Replace with the buyer's email or username
+        sender: email, // Now using the buyer's email instead of "Buyer"
         recipient: selectedItem.email, // Seller's email
         message,
         timestamp: new Date().toISOString(),
       };
 
-      socket.send(JSON.stringify(chatMessage)); // Send message via WebSocket
-      setMessages((prev) => [...prev, chatMessage]); // Display the message locally
-      setMessage(""); // Clear the input field
+      // Send message via WebSocket
+      socket.send(JSON.stringify(chatMessage));
+
+      // Save the message to the backend
+      try {
+        await axios.post("/api/messages", {
+          sender: chatMessage.sender,
+          receiver: chatMessage.recipient,
+          content: chatMessage.message,
+          timestamp: chatMessage.timestamp,
+        });
+
+        console.log("Message saved to the backend");
+
+        // Display the message locally
+        setMessages((prev) => [...prev, chatMessage]);
+        setMessage(""); // Clear the input field
+      } catch (error) {
+        console.error("Error saving message to the backend:", error);
+      }
     }
   };
 
@@ -74,10 +92,16 @@ export function Equipment() {
           {items.map((item) => (
             <li key={item._id} className="equipment-item">
               <h3>{item.name}</h3>
-              <img src={item.imagePath} alt={item.name} className="equipment-image" />
+              <img
+                src={item.imagePath}
+                alt={item.name}
+                className="equipment-image"
+              />
               <p>{item.description}</p>
               <p>Price: ${item.price}</p>
-              <p><strong>Seller:</strong> {item.email}</p>
+              <p>
+                <strong>Seller:</strong> {item.email}
+              </p>
               <button onClick={() => setSelectedItem(item)}>Message Seller</button>
             </li>
           ))}
