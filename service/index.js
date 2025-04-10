@@ -61,8 +61,7 @@ app.get("/api/weather", async (req, res) => {
   try {
     const apiUrl = "http://api.weatherapi.com/v1/current.json";
     const city = "Orem, Utah";
-    const apiKey =
-      process.env.WEATHER_API_KEY || "cb4c756da7324f97ad210204250304";
+    const apiKey = process.env.WEATHER_API_KEY || "cb4c756da7324f97ad210204250304";
     if (!apiKey) {
       return res.status(500).json({ error: "Weather API Key is missing!" });
     }
@@ -90,9 +89,7 @@ app.post("/api/users/register", async (req, res) => {
     }
     const newUser = { name, email, password, createdAt: new Date() };
     await db.collection("users").insertOne(newUser);
-    res
-      .status(201)
-      .json({ email: newUser.email, message: "User created successfully" });
+    res.status(201).json({ email: newUser.email, message: "User created successfully" });
   } catch (err) {
     console.error("Error in /api/users/register:", err.message);
     res.status(500).json({ message: "Internal Server Error" });
@@ -138,10 +135,14 @@ app.get("/api/messages", async (req, res) => {
   try {
     const { user } = req.query;
     const db = req.app.locals.db;
-    const query = user
-      ? { $or: [{ sender: user }, { receiver: user }] }
-      : {};
-    const messages = await db.collection("messages").find(query).toArray();
+    // If a user is specified, get all messages where they are either sender or receiver
+    const query = user ? { $or: [{ sender: user }, { receiver: user }] } : {};
+    // Optionally, sort by timestamp in ascending order
+    const messages = await db
+      .collection("messages")
+      .find(query)
+      .sort({ timestamp: 1 })
+      .toArray();
     console.log("Fetched messages:", messages);
     res.json(messages);
   } catch (error) {

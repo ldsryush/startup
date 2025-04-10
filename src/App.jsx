@@ -57,7 +57,7 @@ function App() {
           Sell
         </NavLink>
         <NavLink
-          to="/messages" // Updated to use Messages component
+          to="/messages"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           Messages
@@ -129,7 +129,8 @@ function App() {
               )
             }
           />
-          <Route path="/messages" element={<Messages />} /> {/* Updated route */}
+          {/* Pass the currentUser object to Messages component */}
+          <Route path="/messages" element={<Messages currentUser={currentUser} />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<PasswordReset />} />
           <Route path="/set-new-password" element={<SetNewPassword />} />
