@@ -88,6 +88,52 @@ Set fixed width and height (e.g., 200px).
 Used object-fit: cover to crop images appropriately without distortion.
 
 Applied these styles uniformly for images across different components (both equipment and apparel).
+Setting Up Email with Gmail SMTP
+Use Gmail’s SMTP Server:
+
+SMTP Host: Use smtp.gmail.com
+
+SMTP Port: Typically, 587 is used for TLS (or 465 for SSL).
+
+Gmail Account: Use your Gmail address as the username.
+
+Generate an App Password:
+
+Enable 2-Step Verification on your Gmail account.
+
+Generate an App Password (instead of using your normal password) from your Google account security settings. Example: Your app password might be something like "zurt jttw ybsw rwwt".
+
+Configure Environment Variables:
+
+Instead of a .env file (which you have chosen not to use), set the following environment variables directly through your server’s configuration or export them in your shell:
+
+SMTP_HOST=smtp.gmail.com
+
+SMTP_PORT=587
+
+SMTP_USER=your-email@gmail.com
+
+SMTP_PASS="zurt jttw ybsw rwwt"
+
+SMTP_SECURE=false (for TLS)
+
+EMAIL_FROM=your-email@gmail.com
+
+These variables are used by your Node.js backend to securely configure the email transporter.
+
+Integrate with Nodemailer in Your Backend:
+
+Your backend uses a function (createMailTransporter()) that checks for production settings. In production, it reads the above environment variables to create a secure Gmail SMTP transporter.
+
+In non-production (development), it uses Ethereal to simulate email sending.
+
+Key Point: This ensures that your reset code emails (and any other emails) are sent reliably once the environment variables are set on your server.
+
+Testing and Deployment:
+
+Before deploying, verify that your server can access Gmail’s SMTP server (for example, by using a test email endpoint).
+
+Restart your application after setting the environment variables to ensure they are loaded.
 
 WebSocket Integration for Real-Time Chat:
 
@@ -110,6 +156,7 @@ Project Structure & Routing:
 Configured your main App.jsx to pass required information (e.g., the user's email) as props to child components like Equipment.jsx and Apparel.jsx.
 
 Set up React Router to navigate between different pages (e.g., Home, Apparel, Equipment, Sell, Messages) while maintaining authentication state.
+
 ## 🚀 Specification Deliverable
 
 > [!NOTE]
