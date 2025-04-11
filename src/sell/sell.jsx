@@ -24,7 +24,7 @@ const Sell = ({ email }) => { // Receive the user's email as a prop
       formData.append("price", itemPrice);
       formData.append("category", itemCategory);
       formData.append("image", itemImage);
-      formData.append("email", email); // Send the user's email
+      formData.append("email", email); 
 
       const response = await fetch("/api/products", {
         method: "POST",

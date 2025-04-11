@@ -10,9 +10,6 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 const port = process.env.PORT || 4000;
-
-// Create HTTP server and bind WebSocket server to it.
-// This allows clients to dynamically construct the WebSocket URL (using host, port, and protocol from window.location)
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
@@ -62,12 +59,10 @@ async function createMailTransporter() {
   }
 }
 
-// In-memory store for reset codes (for demonstration purposes; use a proper datastore in production)
+app.use(express.static('public'));
+
 let resetCodes = {};
 
-// ---------------------
-// Multer Configuration
-// ---------------------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsPath);
@@ -80,15 +75,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Log every request for debugging purposes
 app.use((req, res, next) => {
   console.log("Request:", req.method, req.url);
   next();
 });
 
-// ---------------------
 // API Endpoints
-// ---------------------
 
 // Weather API endpoint
 app.get("/api/weather", async (req, res) => {
@@ -140,7 +132,6 @@ app.post("/api/users/send-reset-code", async (req, res) => {
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
     }
-    // Generate a 6-digit reset code
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
     resetCodes[email] = resetCode;
     const transporter = await createMailTransporter();
@@ -163,7 +154,6 @@ app.post("/api/users/send-reset-code", async (req, res) => {
   }
 });
 
-// Verify Reset Code endpoint
 app.post("/api/users/verify-reset-code", async (req, res) => {
   try {
     const { email, resetCode } = req.body;
@@ -171,8 +161,7 @@ app.post("/api/users/verify-reset-code", async (req, res) => {
       return res.status(400).json({ error: "Email and reset code are required" });
     }
     if (resetCodes[email] && resetCodes[email] === resetCode) {
-      // Typically, you would update the user record to mark the reset code as verified.
-      delete resetCodes[email]; // Invalidate the code after verification
+      delete resetCodes[email];
       res.status(200).json({ message: "Reset code verified!" });
     } else {
       res.status(400).json({ error: "Invalid reset code. Please try again." });
@@ -187,14 +176,11 @@ app.post("/api/users/verify-reset-code", async (req, res) => {
 app.post("/api/messages", async (req, res) => {
   try {
     const { sender, receiver, content, timestamp } = req.body;
-    // Validate required fields
     if (!sender || !receiver || !content) {
       return res.status(400).json({ error: "Missing required fields" });
     }
     const db = req.app.locals.db;
-    // Debugging incoming data
     console.log("Incoming request data:", req.body);
-    // Verify if the sender exists in the database
     const userExists = await db.collection("users").findOne({ email: sender });
     if (!userExists) {
       console.error("Sender not found in database:", sender);
@@ -222,7 +208,6 @@ app.get("/api/messages", async (req, res) => {
   try {
     const { user } = req.query;
     const db = req.app.locals.db;
-    // If a user is specified, get all messages where that user is either the sender or receiver
     const query = user ? { $or: [{ sender: user }, { receiver: user }] } : {};
     const messages = await db
       .collection("messages")
@@ -299,16 +284,17 @@ app.post("/api/users/login", async (req, res) => {
   }
 });
 
-// ---------------------
+app.use((_req, res) => {
+  res.sendFile('index.html', {root:'public'});
+});
+
 // WebSocket Integration
-// ---------------------
 wss.on("connection", (ws) => {
   console.log("New WebSocket connection");
   
   ws.on("message", (message) => {
     console.log("Received message:", message);
     const parsedMessage = JSON.parse(message);
-    // Broadcast the message to all connected clients (except the sender)
     wss.clients.forEach((client) => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(parsedMessage));
@@ -321,24 +307,18 @@ wss.on("connection", (ws) => {
   });
 });
 
-// ---------------------
 // Static Content & SPA
-// ---------------------
 app.use("/uploads", express.static(uploadsPath));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// ---------------------
-// Start the Server & Initialize Database
-// ---------------------
 connectToDatabase()
   .then((client) => {
     const db = client.db("mydatabase");
     app.locals.db = db;
 
-    // Ensure the "messages" collection exists
     db.listCollections({ name: "messages" }).next((err, collectionInfo) => {
       if (!collectionInfo) {
         db.createCollection("messages").then(() => {
