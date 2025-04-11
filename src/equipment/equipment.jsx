@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./equipment.css";
 
-export function Equipment({ email }) { // Now receiving the user's email as a prop
+export function Equipment({ email }) { 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null); // Track selected equipment for messaging
+  const [selectedItem, setSelectedItem] = useState(null); 
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Fetch product items and initialize WebSocket connection
     const fetchProducts = async () => {
       try {
         const response = await fetch("/api/products");
@@ -28,11 +27,10 @@ export function Equipment({ email }) { // Now receiving the user's email as a pr
 
     fetchProducts();
 
-    // Determine WebSocket URL dynamically
     const wsUrl =
       process.env.NODE_ENV === "production"
-        ? "wss://startup.oyeemarket.click" // Production WebSocket URL
-        : "wss://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev"; // Development WebSocket URL
+        ? "wss://startup.oyeemarket.click" 
+        : "wss://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev"; 
 
     console.log("Connecting to WebSocket:", wsUrl);
 
@@ -43,7 +41,6 @@ export function Equipment({ email }) { // Now receiving the user's email as a pr
 
     setSocket(ws);
 
-    // Cleanup WebSocket connection on component unmount
     return () => ws.close();
   }, []);
 
@@ -51,16 +48,14 @@ export function Equipment({ email }) { // Now receiving the user's email as a pr
     if (socket && selectedItem) {
       const chatMessage = {
         itemId: selectedItem._id,
-        sender: email, // Using the buyer's email
-        recipient: selectedItem.email, // Seller's email
+        sender: email, 
+        recipient: selectedItem.email, 
         message,
         timestamp: new Date().toISOString(),
       };
 
-      // Send message via WebSocket
       socket.send(JSON.stringify(chatMessage));
 
-      // Save the message to the backend
       try {
         await axios.post("/api/messages", {
           sender: chatMessage.sender,
@@ -71,9 +66,8 @@ export function Equipment({ email }) { // Now receiving the user's email as a pr
 
         console.log("Message saved to the backend");
 
-        // Display the message locally
         setMessages((prev) => [...prev, chatMessage]);
-        setMessage(""); // Clear the input field
+        setMessage(""); 
       } catch (error) {
         console.error("Error saving message to the backend:", error);
       }

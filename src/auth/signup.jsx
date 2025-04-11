@@ -7,13 +7,10 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // Dynamically determine the API base URL
   const API_BASE_URL =
     process.env.NODE_ENV === "production"
-      ? "https://startup.oyeemarket.click" // Replace with your production domain
-      : "https://organic-robot-r4pwp45v54p63xrx-5173.app.github.dev"; // Current development URL
-
+      ? "https://startup.oyeemarket.click" 
+      : "https://organic-robot-r4pwp45v54p63xrx-5173.app.github.dev"; 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);

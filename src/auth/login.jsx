@@ -21,17 +21,15 @@ const Login = ({ onLoginSuccess }) => {
       if (response.ok) {
         const data = await response.json();
 
-        // Store the logged-in user data in local storage for persistence
         localStorage.setItem(
           "loggedInUser",
           JSON.stringify({ id: data.id, email: data.email, username: data.username })
         );
 
-        // Call the callback to propagate the login success state
         onLoginSuccess({ id: data.id, email: data.email, username: data.username });
 
         setError("");
-        navigate("/"); // Redirect to home page
+        navigate("/"); 
       } else {
         setError("Invalid email or password. Please try again.");
       }

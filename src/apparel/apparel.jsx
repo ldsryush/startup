@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./apparel.css";
 
-export function Apparel({ email }) { // Now receiving the user's email as a prop
+export function Apparel({ email }) { 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null); // Track selected apparel for messaging
+  const [selectedItem, setSelectedItem] = useState(null); 
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [socket, setSocket] = useState(null);
@@ -17,7 +17,7 @@ export function Apparel({ email }) { // Now receiving the user's email as a prop
       try {
         const response = await fetch("/api/products");
         const data = await response.json();
-        setItems(data.filter((item) => item.category === "Apparel")); // Filter for "Apparel" category
+        setItems(data.filter((item) => item.category === "Apparel")); 
         setLoading(false);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -32,7 +32,7 @@ export function Apparel({ email }) { // Now receiving the user's email as a prop
     const wsUrl =
       process.env.NODE_ENV === "production"
         ? "wss://startup.oyeemarket.click" // Production WebSocket URL
-        : "wss://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev"; // Development WebSocket URL
+        : "wss://organic-robot-r4pwp45v54p63xrx-4000.app.github.dev"; 
 
     console.log("Connecting to WebSocket:", wsUrl);
 
@@ -73,7 +73,7 @@ export function Apparel({ email }) { // Now receiving the user's email as a prop
 
         // Display the message locally
         setMessages((prev) => [...prev, chatMessage]);
-        setMessage(""); // Clear the input field
+        setMessage(""); 
       } catch (error) {
         console.error("Error saving message to the backend:", error);
       }
@@ -113,7 +113,7 @@ export function Apparel({ email }) { // Now receiving the user's email as a prop
                   <h3>Chat with the seller about {item.name}</h3>
                   <ul className="chat-messages">
                     {messages
-                      .filter((msg) => msg.itemId === item._id) // Filter messages for the selected item
+                      .filter((msg) => msg.itemId === item._id) 
                       .map((msg, index) => (
                         <li key={index}>
                           <strong>{msg.sender}:</strong> {msg.message}

@@ -13,7 +13,6 @@
   </div>
 
   <script>
-    // Function to fetch messages from the backend and populate the list
     async function fetchMessages() {
       const messagesList = document.getElementById("messages-list");
 
@@ -44,8 +43,6 @@
         messagesList.innerHTML = "<p>Failed to load messages. Please try again later.</p>";
       }
     }
-
-    // Fetch messages on page load
     document.addEventListener("DOMContentLoaded", fetchMessages);
   </script>
 </body>

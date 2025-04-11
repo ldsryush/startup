@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "./sell.css";
 
-const Sell = ({ email }) => { // Receive the user's email as a prop
+const Sell = ({ email }) => {
   const [itemName, setItemName] = useState("");
   const [itemDescription, setItemDescription] = useState("");
   const [itemPrice, setItemPrice] = useState("");
@@ -11,7 +12,7 @@ const Sell = ({ email }) => { // Receive the user's email as a prop
   const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
-    console.log("User email:", email); // Debug to verify email is passed correctly
+    console.log("User email:", email);
   }, [email]);
 
   const handleSell = async (e) => {
@@ -24,14 +25,11 @@ const Sell = ({ email }) => { // Receive the user's email as a prop
       formData.append("price", itemPrice);
       formData.append("category", itemCategory);
       formData.append("image", itemImage);
-      formData.append("email", email); 
+      formData.append("email", email);
 
-      const response = await fetch("/api/products", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await axios.post("/api/products", formData);
 
-      if (response.ok) {
+      if (response.status === 201) {
         setMessage("Item listed successfully!");
         setItemName("");
         setItemDescription("");
@@ -39,16 +37,18 @@ const Sell = ({ email }) => { // Receive the user's email as a prop
         setItemCategory("Apparel");
         setItemImage(null);
         setPreviewImage("");
-      } else if (response.status === 400) {
-        setMessage("Image upload is required!");
-      } else if (response.status >= 500) {
-        setMessage("Server error. Please try again later.");
       } else {
-        setMessage("Failed to list the item. Please try again.");
+        setMessage(
+          response.data?.error ||
+            "Failed to list the item. Please try again."
+        );
       }
     } catch (error) {
       console.error("Error listing item:", error);
-      setMessage("Error connecting to the server.");
+      setMessage(
+        error.response?.data?.error ||
+          "Error connecting to the server."
+      );
     }
   };
 
@@ -61,7 +61,7 @@ const Sell = ({ email }) => { // Receive the user's email as a prop
   };
 
   return (
-    <div>
+    <div className="sell-container">
       <form className="sell-form" onSubmit={handleSell}>
         <h2>Sell Your Item</h2>
         <input
@@ -94,7 +94,12 @@ const Sell = ({ email }) => { // Receive the user's email as a prop
           <option value="Apparel">Apparel</option>
           <option value="Equipment">Equipment</option>
         </select>
-        <input type="file" accept="image/*" onChange={handleImageChange} required />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          required
+        />
         <button type="submit">List Item for Sale</button>
         {message && <p className="error-message">{message}</p>}
       </form>

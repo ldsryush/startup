@@ -33,8 +33,6 @@ export function Messages({ currentUser }) {
     fetchMessages();
   }, [currentUser]);
 
-  // Group messages by conversation partner.
-  // For each message, if the current user is the sender, the partner is the receiver; otherwise, the partner is the sender.
   const conversations = {};
   allMessages.forEach((msg) => {
     const partner = msg.sender === currentUser.email ? msg.receiver : msg.sender;
@@ -44,14 +42,12 @@ export function Messages({ currentUser }) {
     conversations[partner].push(msg);
   });
 
-  // Sort messages in each conversation by timestamp (ascending order)
   Object.keys(conversations).forEach((partner) => {
     conversations[partner].sort(
       (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
     );
   });
 
-  // Handle sending a new message in the selected conversation
   const handleSendMessage = async () => {
     if (!selectedPartner || !newMessage) return;
     const messageToSend = {
@@ -62,7 +58,6 @@ export function Messages({ currentUser }) {
     };
     try {
       await axios.post("/api/messages", messageToSend);
-      // Append the new message locally
       setAllMessages((prev) => [...prev, messageToSend]);
       setNewMessage("");
     } catch (err) {

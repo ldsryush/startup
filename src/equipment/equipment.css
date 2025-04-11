@@ -44,12 +44,11 @@ button.font1:hover {
   background-color: #45a049;
 }
 
-/* Ensure all images are the same size */
 .equipment-image,
 .apparel-image {
-  width: 200px; /* Set uniform width */
-  height: 200px; /* Set uniform height */
-  object-fit: cover; /* Prevent distortion, crop the image to fit */
-  border: 1px solid #ddd; /* Optional border for a polished look */
-  border-radius: 8px; /* Optional: Rounded corners */
+  width: 200px; 
+  height: 200px; 
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 8px; 
 }

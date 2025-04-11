@@ -1,61 +1,55 @@
-/* General body styling */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f4f8; /* Light blue-gray for a clean background */
-  color: #333; /* Neutral text color */
+  background-color: #f0f4f8;
+  color: #333;
   margin: 0;
   padding: 0;
   text-align: center;
 }
 
-/* Form container */
 form {
   display: flex;
-  flex-direction: column; /* Stacks elements vertically */
+  flex-direction: column;
   align-items: center;
-  background-color: #ffffff; /* White for contrast */
+  background-color: #ffffff;
   padding: 20px;
   margin: 20px auto;
-  width: 90%; /* Responsive width */
-  max-width: 400px; /* Maximum width */
-  border-radius: 10px; /* Soft rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  width: 90%;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Form input fields and dropdown */
 form input[type="text"],
 form input[type="number"],
 form textarea,
 form select,
 form input[type="file"] {
-  width: 100%; /* Full width inside the container */
+  width: 100%;
   padding: 12px;
   margin: 10px 0;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 5px;
   box-sizing: border-box;
   background-color: #f9f9f9;
 }
 
-/* Input field focus effect */
 form input:focus,
 form textarea:focus,
 form select:focus {
-  border-color: #4CAF50; /* Green highlight */
+  border-color: #4CAF50;
   outline: none;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Subtle glow */
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
-/* Textarea styling */
 form textarea {
-  resize: vertical; /* Allows resizing only vertically */
-  min-height: 100px; /* Ensures enough space for text */
+  resize: vertical;
+  min-height: 100px;
 }
 
-/* Submit button styling */
 form button {
-  background-color: #4CAF50; /* Bright green */
+  background-color: #4CAF50;
   color: white;
   padding: 12px;
   margin-top: 15px;
@@ -67,18 +61,16 @@ form button {
   transition: background-color 0.3s ease;
 }
 
-/* Button hover effect */
 form button:hover {
-  background-color: #45a049; /* Darker green on hover */
+  background-color: #45a049;
 }
 
-/* Logout button for consistency */
 .logout-button {
   margin-top: 20px;
   padding: 10px 20px;
   font-size: 14px;
   color: white;
-  background-color: #e57373; /* Soft red for logout */
+  background-color: #e57373;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -86,17 +78,15 @@ form button:hover {
 }
 
 .logout-button:hover {
-  background-color: #d32f2f; /* Darker red on hover */
+  background-color: #d32f2f;
 }
 
-/* Styling for headers inside the form */
 form h2 {
   font-size: 24px;
   margin-bottom: 20px;
   color: #333;
 }
 
-/* Image preview area */
 .image-preview {
   margin-top: 15px;
   text-align: center;
@@ -106,19 +96,18 @@ form h2 {
   max-width: 100%;
   max-height: 300px;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle depth for the image */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   form {
-      width: 90%; /* Adjust width for smaller screens */
-      padding: 15px;
+    width: 90%;
+    padding: 15px;
   }
 
   form button,
   .logout-button {
-      font-size: 14px; /* Adjust font size for buttons */
-      padding: 10px;
+    font-size: 14px;
+    padding: 10px;
   }
 }
