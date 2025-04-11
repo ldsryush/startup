@@ -12,8 +12,6 @@ const fs = require("fs");
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Create HTTP server and bind WebSocket server to it.
-// This allows clients to dynamically construct the WebSocket URL (using host, port, and protocol from window.location)
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
@@ -37,13 +35,15 @@ app.use(
 
 app.use(express.json());
 
-// Nodemailer Configuration
 async function createMailTransporter() {
   if (process.env.NODE_ENV === "production") {
+    if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      throw new Error("Missing SMTP configuration for production.");
+    }
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_SECURE === "true", 
+      secure: process.env.SMTP_SECURE === "true",
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -63,6 +63,7 @@ async function createMailTransporter() {
     });
   }
 }
+
 let resetCodes = {};
 
 app.use(express.static("public"));
@@ -79,13 +80,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Log every request for debugging purposes
 app.use((req, res, next) => {
   console.log("Request:", req.method, req.url);
   next();
 });
 
-// Weather API endpoint
 app.get("/api/weather", async (req, res) => {
   try {
     const apiUrl = "http://api.weatherapi.com/v1/current.json";
@@ -94,9 +93,7 @@ app.get("/api/weather", async (req, res) => {
     if (!apiKey) {
       return res.status(500).json({ error: "Weather API Key is missing!" });
     }
-    const response = await axios.get(apiUrl, {
-      params: { key: apiKey, q: city },
-    });
+    const response = await axios.get(apiUrl, { params: { key: apiKey, q: city } });
     res.json({ city, temperature: response.data.current.temp_c });
   } catch (error) {
     console.error("Error fetching weather data:", error.stack);
@@ -104,7 +101,6 @@ app.get("/api/weather", async (req, res) => {
   }
 });
 
-// Signup endpoint
 app.post("/api/users/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -127,16 +123,15 @@ app.post("/api/users/register", async (req, res) => {
   }
 });
 
-// Send Reset Code endpoint
 app.post("/api/users/send-reset-code", async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({ error: "Email is required" });
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      return res.status(400).json({ error: "Valid email is required" });
     }
-    // Generate a 6-digit reset code
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
-    resetCodes[email] = resetCode;
+    // Store the reset code along with an expiration time (15 minutes)
+    resetCodes[email] = { code: resetCode, expiresAt: Date.now() + 15 * 60 * 1000 };
     const transporter = await createMailTransporter();
     const mailOptions = {
       from: process.env.EMAIL_FROM || "no-reply@example.com",
@@ -157,26 +152,52 @@ app.post("/api/users/send-reset-code", async (req, res) => {
   }
 });
 
-// Verify Reset Code endpoint
 app.post("/api/users/verify-reset-code", async (req, res) => {
   try {
     const { email, resetCode } = req.body;
     if (!email || !resetCode) {
       return res.status(400).json({ error: "Email and reset code are required" });
     }
-    if (resetCodes[email] && resetCodes[email] === resetCode) {
-      delete resetCodes[email];
-      res.status(200).json({ message: "Reset code verified!" });
-    } else {
-      res.status(400).json({ error: "Invalid reset code. Please try again." });
+    const stored = resetCodes[email];
+    if (!stored) {
+      return res.status(400).json({ error: "Reset code expired or not found" });
     }
+    if (stored.expiresAt < Date.now()) {
+      delete resetCodes[email];
+      return res.status(400).json({ error: "Reset code expired. Please request a new one." });
+    }
+    if (stored.code !== resetCode) {
+      return res.status(400).json({ error: "Invalid reset code. Please try again." });
+    }
+    delete resetCodes[email];
+    res.status(200).json({ message: "Reset code verified!" });
   } catch (error) {
     console.error("Error verifying reset code:", error.stack);
     res.status(500).json({ error: "Failed to verify reset code." });
   }
 });
 
-// Save Message endpoint
+// NEW: Reset Password Endpoint
+app.post("/api/users/reset-password", async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    if (!email || !newPassword) {
+      return res.status(400).json({ error: "Email and new password are required" });
+    }
+    const db = req.app.locals.db;
+    const user = await db.collection("users").findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    // NOTE: For production security, you should hash the new password before storing it.
+    await db.collection("users").updateOne({ email }, { $set: { password: newPassword } });
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    console.error("Error resetting password:", error.stack);
+    res.status(500).json({ error: "Failed to reset password" });
+  }
+});
+
 app.post("/api/messages", async (req, res) => {
   try {
     const { sender, receiver, content, timestamp } = req.body;
@@ -190,12 +211,7 @@ app.post("/api/messages", async (req, res) => {
       console.error("Sender not found in database:", sender);
       return res.status(403).json({ error: "Unauthorized: Sender not logged in or invalid." });
     }
-    const newMessage = {
-      sender,
-      receiver,
-      content,
-      timestamp: timestamp || new Date(),
-    };
+    const newMessage = { sender, receiver, content, timestamp: timestamp || new Date() };
     const result = await db.collection("messages").insertOne(newMessage);
     console.log("Message successfully saved with id:", result.insertedId);
     res.status(201).json({ message: "Message sent successfully!" });
@@ -205,7 +221,6 @@ app.post("/api/messages", async (req, res) => {
   }
 });
 
-// Get Messages endpoint
 app.get("/api/messages", async (req, res) => {
   try {
     const { user } = req.query;
@@ -220,7 +235,6 @@ app.get("/api/messages", async (req, res) => {
   }
 });
 
-// Products endpoint
 app.post("/api/products", upload.single("image"), async (req, res) => {
   try {
     const { name, description, price, category, email } = req.body;
@@ -246,17 +260,13 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
     };
     const db = req.app.locals.db;
     await db.collection("products").insertOne(newProduct);
-    res.status(201).json({
-      message: "Product added successfully!",
-      product: newProduct,
-    });
+    res.status(201).json({ message: "Product added successfully!", product: newProduct });
   } catch (error) {
     console.error("Error adding product:", error.stack);
     res.status(500).json({ error: "Failed to add product." });
   }
 });
 
-// GET endpoint to fetch products
 app.get("/api/products", async (req, res) => {
   try {
     const db = req.app.locals.db;
@@ -268,7 +278,6 @@ app.get("/api/products", async (req, res) => {
   }
 });
 
-// Login endpoint
 app.post("/api/users/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -286,7 +295,6 @@ app.post("/api/users/login", async (req, res) => {
   }
 });
 
-// WebSocket Integration
 wss.on("connection", (ws) => {
   console.log("New WebSocket connection");
   ws.on("message", (message) => {
@@ -303,13 +311,11 @@ wss.on("connection", (ws) => {
   });
 });
 
-// Static Content & SPA
 app.use("/uploads", express.static(uploadsPath));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-//start server
 connectToDatabase()
   .then((client) => {
     const db = client.db("mydatabase");
