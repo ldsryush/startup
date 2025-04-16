@@ -268,6 +268,6 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 - [x] **Backend listens for WebSocket connection** - Backend listens for Websocket connection and correctly sends messages to be stored to my mongo db.
 - [x] **Frontend makes WebSocket connection** - My messages page correctly shows chatlogs as well as let user chat with eachother about the item of interest.
-- [x] **Data sent over WebSocket connection** - I did not complete this part of the deliverable.
+- [x] **Data sent over WebSocket connection** - I did complete this part of the deliverable and works in production.
 - [x] **WebSocket data displayed** - Both buyer and seller can both see the chat history and what time they sent the message.
-- [x] **Application is fully functional** - Application if fully functional in letting users sign up, reset password, log in, list items, and talk to potential sellers/buyers.
+- [x] **Application is fully functional** - Application is fully functional in letting users sign up, reset password, log in, list items, and talk to potential sellers/buyers.

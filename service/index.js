@@ -12,8 +12,12 @@ const fs = require("fs");
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Create the HTTP server from our Express app.
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+
+// UPDATE: Create the WebSocket server on the '/ws' path so that the client-side ChatClient
+// can use the proper endpoint.
+const wss = new WebSocket.Server({ server, path: "/ws" });
 
 const uploadsPath = path.join(__dirname, "uploads");
 console.log("Uploads will be served from:", uploadsPath);
@@ -37,7 +41,12 @@ app.use(express.json());
 
 async function createMailTransporter() {
   if (process.env.NODE_ENV === "production") {
-    if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    if (
+      !process.env.SMTP_HOST ||
+      !process.env.SMTP_PORT ||
+      !process.env.SMTP_USER ||
+      !process.env.SMTP_PASS
+    ) {
       throw new Error("Missing SMTP configuration for production.");
     }
     return nodemailer.createTransport({
@@ -89,7 +98,8 @@ app.get("/api/weather", async (req, res) => {
   try {
     const apiUrl = "http://api.weatherapi.com/v1/current.json";
     const city = "Orem, Utah";
-    const apiKey = process.env.WEATHER_API_KEY || "cb4c756da7324f97ad210204250304";
+    const apiKey =
+      process.env.WEATHER_API_KEY || "cb4c756da7324f97ad210204250304";
     if (!apiKey) {
       return res.status(500).json({ error: "Weather API Key is missing!" });
     }
@@ -164,7 +174,9 @@ app.post("/api/users/verify-reset-code", async (req, res) => {
     }
     if (stored.expiresAt < Date.now()) {
       delete resetCodes[email];
-      return res.status(400).json({ error: "Reset code expired. Please request a new one." });
+      return res
+        .status(400)
+        .json({ error: "Reset code expired. Please request a new one." });
     }
     if (stored.code !== resetCode) {
       return res.status(400).json({ error: "Invalid reset code. Please try again." });
@@ -177,7 +189,6 @@ app.post("/api/users/verify-reset-code", async (req, res) => {
   }
 });
 
-// NEW: Reset Password Endpoint
 app.post("/api/users/reset-password", async (req, res) => {
   try {
     const { email, newPassword } = req.body;
@@ -198,6 +209,7 @@ app.post("/api/users/reset-password", async (req, res) => {
   }
 });
 
+// Modified /api/messages endpoint to broadcast new messages via WebSocket
 app.post("/api/messages", async (req, res) => {
   try {
     const { sender, receiver, content, timestamp } = req.body;
@@ -209,12 +221,22 @@ app.post("/api/messages", async (req, res) => {
     const userExists = await db.collection("users").findOne({ email: sender });
     if (!userExists) {
       console.error("Sender not found in database:", sender);
-      return res.status(403).json({ error: "Unauthorized: Sender not logged in or invalid." });
+      return res
+        .status(403)
+        .json({ error: "Unauthorized: Sender not logged in or invalid." });
     }
     const newMessage = { sender, receiver, content, timestamp: timestamp || new Date() };
     const result = await db.collection("messages").insertOne(newMessage);
     console.log("Message successfully saved with id:", result.insertedId);
-    res.status(201).json({ message: "Message sent successfully!" });
+    
+    // Broadcast the new message to all connected WebSocket clients
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(newMessage));
+      }
+    });
+    
+    res.status(201).json({ message: "Message sent successfully!", data: newMessage });
   } catch (error) {
     console.error("Error saving message:", error.stack);
     res.status(500).json({ error: "Failed to save message." });
@@ -295,19 +317,43 @@ app.post("/api/users/login", async (req, res) => {
   }
 });
 
+// WebSocket connection with keepalive ping/pong support
 wss.on("connection", (ws) => {
   console.log("New WebSocket connection");
+
   ws.on("message", (message) => {
     console.log("Received message:", message);
-    const parsedMessage = JSON.parse(message);
+    let parsedMessage;
+    try {
+      parsedMessage = JSON.parse(message);
+    } catch (err) {
+      console.error("Error parsing message:", err);
+      return;
+    }
+    // Broadcast the received message to all other connected clients
     wss.clients.forEach((client) => {
       if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(parsedMessage));
       }
     });
   });
+  
+  // Keep the connection alive by sending a ping every 30 seconds
+  const keepAliveInterval = setInterval(() => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.ping();
+    } else {
+      clearInterval(keepAliveInterval);
+    }
+  }, 30000);
+  
+  ws.on("pong", () => {
+    ws.isAlive = true;
+  });
+  
   ws.on("close", () => {
     console.log("WebSocket connection closed");
+    clearInterval(keepAliveInterval);
   });
 });
 
